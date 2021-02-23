@@ -8,5 +8,5 @@ opkg install libzstd
 ```
 然后下载脚本执行
 ```bash
-wget -qO- https://github.com/My-Compile/nanopi-R2S/blob/master/scripts/autoupdate.sh | sh
+wget -qO- https://github.com/My-Compile/nanopi-R2S/raw/master/scripts/autoupdate.sh | sh
 ```
