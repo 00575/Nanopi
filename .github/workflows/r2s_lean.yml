@@ -15,7 +15,7 @@ jobs:
   build:
 
     runs-on: ubuntu-18.04
-    if: github.repository == 'biliwala/nanopi-openwrt'
+    if: github.repository == 'My-Compile/nanopi-R2S'
 
     steps:
 
