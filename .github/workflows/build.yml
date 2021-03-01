@@ -142,7 +142,7 @@ jobs:
         uses: P3TERX/ssh2actions@main
         if: ${{ failure() }}
         env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
       - name: Send tg notification
@@ -150,5 +150,5 @@ jobs:
         #if: always()
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          token: ${{ secrets.RELEASE_TOKEN }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           args: The ${{ github.event.client_payload.device }} build ran completed at ${{ job.status }}.
