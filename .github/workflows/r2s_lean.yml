@@ -1,10 +1,10 @@
-name: r2s Lean版openwrt
+name: r2s Lean版openwrt minimal 
 
 on:
   push:
     branches: [ master ]
     paths:
-      - '.github/workflows/r2s_lean.yml'
+      - '.github/workflows/r2s_lean_minimal.yml'
   schedule:
     - cron: '00 21 * * *'
   workflow_dispatch:
@@ -15,7 +15,7 @@ jobs:
   build:
 
     runs-on: ubuntu-18.04
-    if: github.repository == 'My-Compile/nanopi-R2S'
+    if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
 
@@ -46,7 +46,6 @@ jobs:
           git remote add upstream https://github.com/coolsnowwolf/openwrt && git fetch upstream
           git checkout upstream/lede-17.01 -b tmp
           git rm README.md
-          git apply ../../remove_ramfree.diff && git add .
           git commit -m 'reset'
           git checkout master-v19.07.1
           git rebase adc1a9a3676b8d7be1b48b5aed185a94d8e42728^ --onto tmp -X theirs
@@ -56,7 +55,6 @@ jobs:
           . ../../3_prepare_packages.sh
           . ../../add_openclash.sh
           . ../../add_passwall.sh
-          git apply ../../enable_autocore.diff
           sed -i 's/@LINUX_5_4//' package/lean/luci-app-flowoffload/Makefile
           . ../../5_mods.sh
           mv ../../scripts/check_wan4.sh package/base-files/files/usr/bin && sed -i '/exit/i\/bin/sh /usr/bin/check_wan4.sh &' package/base-files/files/etc/rc.local
