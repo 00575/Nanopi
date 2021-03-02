@@ -32,16 +32,16 @@ jobs:
 
       - name: Checkout
         run: |
-          sudo curl https://raw.githubusercontent.com/My-Compile/nanopi-R2S/zstd-bin/zstd | sudo tee /usr/bin/zstd > /dev/null
-          for i in {0..5}
+          sudo curl https://raw.githubusercontent.com/klever1988/nanopi-openwrt/zstd-bin/zstd | sudo tee /usr/bin/zstd > /dev/null
+          for i in {1..6}
           do
-           curl -s -L --fail https://github.com/${{ github.repository }}/releases/download/cache/lede.${{ github.event.client_payload.device }}.img.zst.0$i || break
+           curl -s -L --fail https://github.com/klever1988/sshactions/releases/download/cache/lede.${{ github.event.client_payload.device }}.img.zst.0$i || break
           done | zstdmt -d -o lede.img || (truncate -s 40g lede.img && mkfs.xfs lede.img)
           LOOP_DEVICE=$(losetup -f) && echo $LOOP_DEVICE > LOOP_DEVICE
           sudo losetup -P --direct-io $LOOP_DEVICE lede.img
           mkdir lede && sudo mount $LOOP_DEVICE lede && sudo chown -R $USER:$USER lede
           [ ! -e lede/.git ] && (cd lede && git init && git remote add -t openwrt-18.06-k5.4 -f origin https://github.com/immortalwrt/immortalwrt && git checkout openwrt-18.06-k5.4)
-          cd lede && git config --local user.email "action@github.com" && git config --local user.name "GitHub Action" && git pull -X theirs
+          cd lede && git config --local user.email "action@github.com" && git config --local user.name "GitHub Action" && git pull --ff -X theirs
       - name: Update feeds and packages
         run: |
           cd lede/
