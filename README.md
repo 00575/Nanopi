@@ -1,4 +1,4 @@
-发布地址：
+### 固件发布地址：
 https://github.com/My-Compile/nanopi-R2S/releases
 
 ### R2S精简固件
@@ -18,10 +18,10 @@ wget -qO- https://github.com/My-Compile/nanopi-R2S/raw/master/scripts/autoupdate
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-### R2S-ImmortalWrt固件
+### R1S-R2S-R4S-Immortal固件
 登录IP：192.168.1.1，默认用户名是root, 密码是password
 
-### R2S-ImmortalWrt固件 在线升级方法:  
+### R1S-R2S-R4S-Immortal固件 在线升级方法:  
 先安装好依赖
 ```bash
 opkg update
