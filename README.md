@@ -16,7 +16,7 @@ opkg install libzstd
 wget -qO- https://github.com/My-Compile/nanopi-R2S/raw/master/scripts/autoupdate.sh | sh
 ```
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ### R1S-R2S-R4S-openwrt固件
 登录IP：192.168.1.1，默认用户名是root, 密码是password
