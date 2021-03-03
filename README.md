@@ -7,7 +7,6 @@ https://github.com/My-Compile/nanopi-R2S/releases
 默认用户名：root
 密码：password
 ```
-
 ### R2S精简固件 在线升级方法:  
 先安装好依赖
 ```bash
@@ -28,7 +27,6 @@ wget -qO- https://github.com/My-Compile/nanopi-R2S/raw/master/scripts/autoupdate
 默认用户名：root
 密码：password
 ```
-
 ### openwrt固件临时说明：
 暂时不要fork后自己编译，因为编译缓存工作路径不同，会导致你的编译时间非常长。
 
