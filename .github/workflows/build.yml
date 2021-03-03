@@ -127,7 +127,7 @@ jobs:
 
       - name: Save cache state
         run: |
-          export AUTH="Authorization: token ${{ secrets.RELEASE_TOKEN }}"
+          export AUTH="Authorization: token ${{ secrets.SEC_TOKEN }}"
           export cache_path='github.com/repos/klever1988/sshactions/releases'
           export cache_repo_id='39020554'
           ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/cache")
