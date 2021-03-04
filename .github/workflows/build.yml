@@ -128,7 +128,7 @@ jobs:
       - name: Save cache state
         run: |
           export AUTH="Authorization: token ${{ secrets.release_token }}"
-          export cache_path='github.com/repos/klever1988/sshactions/releases'
+          export cache_path='github.com/repos/My-Compile/sshactions/releases'
           export cache_repo_id='39020554'
           ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/cache")
           echo $ret | jq -r '.assets[] | select(.name | contains ("'${{ github.event.client_payload.device || github.event.inputs.device }}'")).id' | \
