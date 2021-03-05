@@ -54,20 +54,11 @@ jobs:
           cd ~/lede
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-          git clone --depth=1 https://github.com/destan19/OpenAppFilter.git && rm -rf package/OpenAppFilter && mv OpenAppFilter package/
-          git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git && rm -rf package/lean/luci-theme-argon && mv luci-theme-argon package/lean/
+          . $GITHUB_WORKSPACE/merge_packages.sh
       - name: Custom configure file
         run: |
           cd ~/lede
-          rm -f .config*
           cat $GITHUB_WORKSPACE/$DEVICE.config.seed > .config
-          sed -i 's/^[ \t]*//g' .config
-          echo '
-          # CONFIG_v2ray-plugin_INCLUDE_GOPROXY is not set
-          # CONFIG_XRAY_CORE_COMPRESS_GOPROXY is not set
-          # CONFIG_UnblockNeteaseMusicGo_INCLUDE_GOPROXY is not set
-          ' >> .config
-          cat .config
       - name: Compile firmware
         run: |
           cd ~/lede
