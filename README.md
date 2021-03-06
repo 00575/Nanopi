@@ -2,7 +2,9 @@
 https://github.com/My-Compile/nanopi-R2S/releases
 
 登录IP：192.168.2.1
+
 默认用户名：root
+
 密码：password
 
 ### R2S精简固件 在线升级方法:  
