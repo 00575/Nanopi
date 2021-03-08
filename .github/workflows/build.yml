@@ -39,11 +39,11 @@ jobs:
           sudo curl -sL https://raw.githubusercontent.com/My-Compile/nanopi-R2S/zstd-bin/zstd | sudo tee /usr/bin/zstd > /dev/null
           for i in {1..6}
           do
-            curl -sL --fail https://github.com/klever1988/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
+            curl -sL --fail https://github.com/My-Compile/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
           done | zstdmt -d -o lede.img || (truncate -s 10g lede.img && mkfs.btrfs -M lede.img)
           LOOP_DEVICE=$(losetup -f) && echo "LOOP_DEVICE=$LOOP_DEVICE" >> $GITHUB_ENV
           sudo losetup -P --direct-io $LOOP_DEVICE lede.img
-          mkdir lede && sudo mount -o nossd,autodefrag,compress=zstd $LOOP_DEVICE lede
+          mkdir lede && sudo mount -o nossd,compress=zstd $LOOP_DEVICE lede
           if [ -d 'lede/.git' ]; then
           cd lede && git config --local user.email "action@github.com" && git config --local user.name "GitHub Action"
           git remote set-branches --add origin openwrt-18.06
@@ -104,13 +104,11 @@ jobs:
           cp -rf $(find ./bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ../artifact/buildinfo/
           cp $(ls -1 ../artifact/firmware/*img*) ../release/$DEVICE.img.gz
           pushd ../release/ && md5sum $DEVICE.img.gz > md5sum.txt && popd
-          echo "strDate=$(date +%Y-%m-%d)" >> $GITHUB_ENV
+          echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
           echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
           rm -rf bin/ tmp/
           cd ..
           mv artifact release $GITHUB_WORKSPACE
-          sudo umount lede
-          sudo losetup -d $LOOP_DEVICE
       - name: Deliver buildinfo
         uses: actions/upload-artifact@v2
         with:
@@ -132,7 +130,7 @@ jobs:
       - name: Upload release asset
         uses: svenstaro/upload-release-action@v2
         with:
-          repo_token: ${{ secrets.release_token }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./release/*
           tag: ${{env.DEVICE}}-${{env.strDate}}
           file_glob: true
@@ -140,9 +138,13 @@ jobs:
           release_name: ${{env.strDevice}} ${{env.strDate}} 自动发布
 
       - name: Save cache state
+        if: env.TG
         run: |
+          sleep 120
+          sudo umount lede
+          sudo losetup -d $LOOP_DEVICE
           cd
-          export AUTH="Authorization: token ${{ secrets.release_token }}"
+          export AUTH="Authorization: token ${{ secrets.SEC_TOKEN }}"
           export cache_path='github.com/repos/My-Compile/sshactions/releases'
           export cache_repo_id='39020554'
           ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/cache")
@@ -152,14 +154,14 @@ jobs:
           'curl -s --data-binary @- -H "$AUTH" -H "Content-Type: application/octet-stream" https://uploads.$cache_path/$cache_repo_id/assets?name=lede.'$DEVICE'.img.zst.0{#} > /dev/null'
       - name: Debug via tmate
         uses: P3TERX/ssh2actions@main
-        if: ${{ failure() }}
+        if: ${{ failure() && env.TG }}
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
       - name: Send tg notification
         uses: appleboy/telegram-action@master
-        if: ${{env.TG}}
+        if: env.TG
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
