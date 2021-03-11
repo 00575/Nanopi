@@ -21,8 +21,6 @@ merge_package https://github.com/coolsnowwolf/lede/trunk/package/lean/luci-app-c
 merge_package https://github.com/coolsnowwolf/packages/trunk/kernel/ksmbd
 merge_package https://github.com/coolsnowwolf/packages/trunk/net/ksmbd-tools
 
-rm -rf package/luci-app-vssr
-
 if [ $DEVICE = 'r2s' ]; then
 mkdir -p target/linux/rockchip/armv8/base-files/usr/bin &&\
 wget https://github.com/friendlyarm/friendlywrt/raw/master-v19.07.1/target/linux/rockchip-rk3328/base-files/usr/bin/start-rk3328-pwm-fan.sh -qNP target/linux/rockchip/armv8/base-files/usr/bin &&\
@@ -32,7 +30,11 @@ wget https://github.com/friendlyarm/friendlywrt/raw/master-v19.07.1/target/linux
 chmod +x target/linux/rockchip/armv8/base-files/etc/init.d/fa-rk3328-pwmfan
 mkdir -p target/linux/rockchip/armv8/base-files/etc/rc.d &&\
 ln -sf ../init.d/fa-rk3328-pwmfan target/linux/rockchip/armv8/base-files/etc/rc.d/S96fa-rk3328-pwmfan
-merge_package https://github.com/NateLol/luci-app-oled
+sed -i "s/enable\ \'0\'/enable \'1\'/" package/ctcgfw/luci-app-oled/root/etc/config/oled
 fi
 
 sed -i 's/192.168.1.1/192.168.2.1/' package/base-files/files/bin/config_generate
+
+mkdir -p package/base-files/files/etc/dropbear
+mv $GITHUB_WORKSPACE/host_keys/* package/base-files/files/etc/dropbear/
+chmod 600 package/base-files/files/etc/dropbear/*
