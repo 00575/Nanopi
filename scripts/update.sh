@@ -2,21 +2,18 @@
 set -e $1
 
 opkg update || true
-if ! command -v pv &> /dev/null
-then
-	opkg install pv
-	if ! command -v pv &> /dev/null; then echo -e '\e[91mpv命令不可用，升级中止！\e[0m' && exit 1; fi
-fi
-if ! command -v fdisk &> /dev/null
-then
-	opkg install --force-overwrite fdisk
-	if ! command -v fdisk &> /dev/null; then echo -e '\e[91mfdisk命令不可用，升级中止！\e[0m' && exit 1; fi
-fi
-if ! command -v losetup &> /dev/null
-then
-	opkg install --force-overwrite losetup
-	if ! command -v losetup &> /dev/null; then echo -e '\e[91mlosetup命令不可用，升级中止！\e[0m' && exit 1; fi
-fi
+function proceed_command () {
+	if ! command -v $1 &> /dev/null; then opkg install --force-overwrite $1; fi
+	if ! command -v $1 &> /dev/null; then echo -e '\e[91m'$1'命令不可用，升级中止！\e[0m' && exit 1; fi
+}
+proceed_command pv
+proceed_command fdisk
+proceed_command sfdisk
+proceed_command losetup
+proceed_command resize2fs
+wget -P /tmp https://ghproxy.com/https://github.com/My-Compile/nanopi-R2S/raw/zstd-bin/truncate
+wget -P /tmp https://ghproxy.com/https://github.com/My-Compile/nanopi-R2S/raw/zstd-bin/ddnz
+chmod +x /tmp/truncate /tmp/ddnz
 
 board_id=$(cat /etc/board.json | jsonfilter -e '@["model"].name' | tail -c 4 | tr -d "\n" | awk '{print tolower($0)}')
 mount -t tmpfs -o remount,size=650m tmpfs /tmp
