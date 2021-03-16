@@ -51,6 +51,7 @@ jobs:
           else
           sudo chown $USER:$(id -gn) lede && (cd lede && git init && git remote add -t openwrt-18.06-k5.4 -f origin https://github.com/immortalwrt/immortalwrt && git checkout openwrt-18.06-k5.4)
           fi
+
       - name: Update feeds and packages
         run: |
           cd ~/lede
@@ -90,6 +91,7 @@ jobs:
           du -h --max-depth=1 ./ --exclude=build_dir --exclude=bin
           du -h --max-depth=1 ./build_dir
           du -h --max-depth=1 ./bin
+
       - name: Prepare artifact
         run: |
           cd
@@ -146,7 +148,7 @@ jobs:
           sudo losetup -d $LOOP_DEVICE
           export AUTH="Authorization: token ${{ secrets.workflow_token }}"
           export cache_path='github.com/repos/My-Compile/sshactions/releases'
-          export cache_repo_id='39020554'
+          export cache_repo_id='39852611'
           ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/cache")
           echo $ret | jq -r '.assets[] | select(.name | contains ("'$DEVICE'")).id' | \
           xargs -n1 -i curl -X DELETE -H "$AUTH" "https://api.$cache_path/assets/{}"
