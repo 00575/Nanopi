@@ -86,6 +86,7 @@ jobs:
           make defconfig
           while true; do make download -j && break || true; done
           while true; do make package/download -j && break || true; done
+          make package/feeds/packages/ttyd/clean
           make -j$(($(nproc) + 1)) || make V=sc
           echo "======================="
           echo "Space usage:"
