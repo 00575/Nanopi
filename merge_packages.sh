@@ -29,7 +29,3 @@ chmod +x files/etc/init.d/fa-rk3328-pwmfan
 ln -sf ../init.d/fa-rk3328-pwmfan files/etc/rc.d/S96fa-rk3328-pwmfan
 sed -i "s/enable '0'/enable '1'/" package/ctcgfw/luci-app-oled/root/etc/config/oled
 fi
-
-find . -type f -name nft-qos.config | xargs sed -i "s/option limit_enable '1'/option limit_enable '0'/"
-sed -i "/\/etc\/coremark\.sh/d" package/feeds/packages/coremark/Makefile
-sed -i 's/192.168.1.1/192.168.2.1/' package/base-files/files/bin/config_generate
