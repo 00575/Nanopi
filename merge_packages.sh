@@ -11,13 +11,8 @@ function merge_package(){
         git clone $3 --depth=1 $1
         rm -rf $pn/.git
     fi
-
     mv $pn package/
 }
-rm -rf files && mkdir files
-mkdir -p files/etc/dropbear
-mv $GITHUB_WORKSPACE/host_keys/* files/etc/dropbear/
-chmod 600 files/etc/dropbear/*
 
 merge_package https://github.com/linkease/ddnsto-openwrt
 merge_package https://github.com/project-lede/luci-app-godproxy
