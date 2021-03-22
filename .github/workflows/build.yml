@@ -145,7 +145,6 @@ jobs:
           release_name: ${{env.strDevice}} ${{env.strDate}} 自动发布
 
       - name: Save cache state
-        if: env.TG
         run: |
           cd
           sleep 120
