@@ -4,6 +4,7 @@ mkdir friendlywrt-$2
 cd friendlywrt-$2
 repo init -u https://github.com/friendlyarm/friendlywrt_manifests -b $1 -m $2.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle --depth=1
 repo sync -c --no-tags --no-clone-bundle -j8
+rm -rf scripts/sd-fuse && git clone -b kernel-v5.4.y --depth 1 https://github.com/biliwala/sd-fuse_rk3328 scripts/sd-fuse
 cd friendlywrt/ && git fetch --unshallow
 git checkout `git branch -va | grep remotes/m | awk '{print $3}' | awk -F\/ '{print $2}'`
 
