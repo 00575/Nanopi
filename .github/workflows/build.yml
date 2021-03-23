@@ -117,12 +117,18 @@ jobs:
           du -h --max-depth=1 ./ --exclude=build_dir --exclude=bin
           du -h --max-depth=1 ./build_dir
           du -h --max-depth=1 ./bin
+          
       - name: Prepare artifact
         run: |
           cd
+          mkdir -p ./artifact/firmware
+          mkdir -p ./artifact/package
           mkdir -p ./artifact/buildinfo
           mkdir -p ./release
           cd lede
+          rm -rf $(find ./bin/targets/ -type d -name "packages")
+          cp -rf $(find ./bin/targets/ -type f) ../artifact/firmware/
+          cp -rf $(find ./bin/packages/ -type f -name "*.ipk") ../artifact/package/
           cp -rf $(find ./bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ../artifact/buildinfo/
           cp -rf .config ../artifact/buildinfo/
           mv $(ls -1 ./bin/targets/*/*/*img.gz) ../release/$DEVICE-slim.img.gz
@@ -131,12 +137,25 @@ jobs:
           rm -rf bin tmp
           cd ..
           mv artifact release $GITHUB_WORKSPACE
-          cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE-slim.img.gz > $DEVICE-slim.img.md5
+          #cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE-slim.img.gz > $DEVICE-slim.img.md5
+          
       - name: Deliver buildinfo
         uses: actions/upload-artifact@v2
         with:
           name: OpenWrt_buildinfo
           path: ./artifact/buildinfo/
+
+      - name: Deliver package
+        uses: actions/upload-artifact@v2
+        with:
+          name: OpenWrt_package
+          path: ./artifact/package/
+
+      - name: Deliver firmware
+        uses: actions/upload-artifact@v2
+        with:
+          name: OpenWrt_firmware
+          path: ./artifact/firmware/
 
       - name: Upload release asset
         uses: svenstaro/upload-release-action@v2
