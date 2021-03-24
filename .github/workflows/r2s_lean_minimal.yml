@@ -46,6 +46,8 @@ jobs:
           git remote add upstream https://github.com/coolsnowwolf/openwrt && git fetch upstream
           git checkout upstream/lede-17.01 -b tmp
           git rm README.md
+          sed -i 's/=1/=0/g' package/kernel/linux/files/sysctl-br-netfilter.conf
+          git apply ../../remove_ramfree.diff && git add .
           git commit -m 'reset'
           git checkout master-v19.07.1
           git rebase adc1a9a3676b8d7be1b48b5aed185a94d8e42728^ --onto tmp -X theirs
