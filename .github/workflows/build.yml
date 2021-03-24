@@ -67,8 +67,7 @@ jobs:
         run: |
           cd ~/lede
           cat $GITHUB_WORKSPACE/$DEVICE.config.seed | sed '/CONFIG_PACKAGE_luci-app-/d' > .config
-          echo >> .config
-          find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo "# CONFIG_PACKAGE_{} is not set" >> .config
+          
       - name: Build and deploy packages
         run: |
           cd ~/lede
@@ -90,7 +89,8 @@ jobs:
           make defconfig && make tools/upx/compile -j$(($(nproc) + 1))
           sed -i '/\(tools\|toolchain\)\/Makefile/d' Makefile
           echo -e '# CONFIG_SIGNED_PACKAGES is not set\n' >> .config
-          find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | sort | xargs -n1 -i echo CONFIG_PACKAGE_{}=y >> .config
+          find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo CONFIG_PACKAGE_{}=y >> .config
+          find feeds/luci/applications -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo CONFIG_PACKAGE_{}=y >> .config
           make defconfig && cat .config
           while true; do make download -j && break || true; done
           make target/linux/compile -j$(($(nproc) + 1))
@@ -101,6 +101,7 @@ jobs:
           cat $GITHUB_WORKSPACE/$DEVICE.config.seed | sed '/CONFIG_PACKAGE_luci-app-/d' > .config
           echo -e '# CONFIG_SIGNED_PACKAGES is not set\n' >> .config
           find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo "# CONFIG_PACKAGE_{} is not set" >> .config
+          find feeds/luci/applications -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo "# CONFIG_PACKAGE_{} is not set" >> .config
           make defconfig
           mkdir -p files/local_feed/core files/local_feed/base files/local_feed/luci
           sudo mount --bind bin/targets/*/*/packages/ files/local_feed/core
