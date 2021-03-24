@@ -14,8 +14,6 @@ if [[ `pwd` == *"rk3328"* ]]; then
   rm -rf luci-app-oled/ && git clone https://github.com/NateLol/luci-app-oled
 fi
 [ ! -d luci-app-adguardhome ] && git clone https://github.com/rufengsuixing/luci-app-adguardhome
-[ ! -d luci-app-mentohust ] && git clone https://github.com/BoringCat/luci-app-mentohust
-[ ! -d mentohust ] && svn co https://github.com/project-openwrt/openwrt/trunk/package/ctcgfw/mentohust
 [ ! -d luci-app-jd-dailybonus ] && git clone https://github.com/jerrykuku/luci-app-jd-dailybonus
 rm -rf luci-theme-argon*/ ../lean/luci-theme-argon/ && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon
 rm -rf luci-theme-edge/ && git clone -b 18.06 https://github.com/garypang13/luci-theme-edge
@@ -29,16 +27,3 @@ rm -rf autocore/ && svn export https://github.com/coolsnowwolf/lede/trunk/packag
 svn co https://github.com/songchenwen/nanopi-r2s/trunk/luci-app-r2sflasher
 sed -i "s/option limit_enable '1'/option limit_enable '0'/" nft-qos/files/nft-qos.config
 cd ../../
-
-
-#git clone https://github.com/jerrykuku/lua-maxminddb.git
-#git clone https://github.com/jerrykuku/luci-app-vssr.git
-#cd luci-app-vssr/root/etc/
-#echo 'china_ssr.txt
-#config/black.list
-#config/white.list
-#dnsmasq.oversea/oversea_list.conf
-#dnsmasq.ssr/ad.conf
-#dnsmasq.ssr/gfw_base.conf
-#dnsmasq.ssr/gfw_list.conf' | xargs rm
-#cd ../../../
