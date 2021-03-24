@@ -15,11 +15,16 @@ https://github.com/huyunlei2020/R2S/releases
 opkg update
 opkg install --force-overwrite pv fdisk
 ```
+
 然后下载脚本执行
 ```bash
 wget -qO- https://github.com/huyunlei2020/R2S/raw/master/scripts/update.sh | sh
 ```
 
+slim版
+```bash
+wget -qO- https://github.com/huyunlei2020/R2S/raw/master/scripts/update.sh | ver=-slim sh
+```
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ### R2S精简固件 在线升级方法:  
