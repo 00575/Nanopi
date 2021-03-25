@@ -13,7 +13,7 @@ jobs:
 
   build_packages:
     name: Build ${{ github.event.client_payload.device || github.event.inputs.device }} packages
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     env:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -40,7 +40,7 @@ jobs:
           sudo curl -sL https://raw.githubusercontent.com/huyunlei2020/R2S/zstd-bin/zstd | sudo tee /usr/bin/zstd > /dev/null
           for i in {1..10}
           do
-            curl -sL --fail https://github.com/klever1988/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
+            curl -sL --fail https://github.com/huyunlei2020/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
           done | zstdmt -d -o lede.img || (truncate -s 20g lede.img && mkfs.btrfs -M lede.img)
           LOOP_DEVICE=$(losetup -f) && echo "LOOP_DEVICE=$LOOP_DEVICE" >> $GITHUB_ENV
           sudo losetup -P --direct-io $LOOP_DEVICE lede.img
@@ -63,11 +63,11 @@ jobs:
           ./scripts/feeds install -a
           . $GITHUB_WORKSPACE/patches.sh
           . $GITHUB_WORKSPACE/merge_packages.sh
+          sed -i 's/..\/..\//$(TOPDIR)\/feeds\/packages\//' package/feeds/packages/baidupcs-web/Makefile
       - name: Custom configure file
         run: |
           cd ~/lede
           cat $GITHUB_WORKSPACE/$DEVICE.config.seed | sed '/CONFIG_PACKAGE_luci-app-/d' > .config
-          
       - name: Build and deploy packages
         run: |
           cd ~/lede
@@ -88,6 +88,7 @@ jobs:
           sed -i '/tencent/d' scripts/download.pl
           make defconfig && make tools/upx/compile -j$(($(nproc) + 1))
           sed -i '/\(tools\|toolchain\)\/Makefile/d' Makefile
+          cat $GITHUB_WORKSPACE/extra_packages.seed >> .config
           echo -e '# CONFIG_SIGNED_PACKAGES is not set\n' >> .config
           find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo CONFIG_PACKAGE_{}=y >> .config
           find feeds/luci/applications -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo CONFIG_PACKAGE_{}=y >> .config
@@ -106,6 +107,7 @@ jobs:
           mkdir -p files/local_feed/core files/local_feed/base files/local_feed/luci
           sudo mount --bind bin/targets/*/*/packages/ files/local_feed/core
           sudo mount --bind bin/packages/*/base/ files/local_feed/base
+          sudo mount --bind bin/packages/*/luci/ files/local_feed/luci
           pushd bin/ && . ../files/etc/opkg/distfeeds.conf | tee ../files/etc/opkg/distfeeds.conf && popd
           make -j$(($(nproc) + 1))
           sudo umount files/local_feed/core files/local_feed/base files/local_feed/luci
@@ -150,7 +152,7 @@ jobs:
           release_name: ${{env.strDate}} 自动发布
 
       - name: Save cache state
-        #if: env.TG
+        if: env.TG
         run: |
           cd
           sleep 120
@@ -208,10 +210,10 @@ jobs:
           sudo sysctl vm.swappiness=0
           nohup sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk &
           cd
-          sudo curl -sL https://raw.githubusercontent.com/HUYUNLEI2020/r2s/zstd-bin/zstd | sudo tee /usr/bin/zstd > /dev/null
+          sudo curl -sL https://raw.githubusercontent.com/huyunlei2020/R2S/zstd-bin/zstd | sudo tee /usr/bin/zstd > /dev/null
           for i in {1..10}
           do
-            curl -sL --fail https://github.com/HUYUNLEI2020/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
+            curl -sL --fail https://github.com/huyunlei2020/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
           done | zstdmt -d -o lede.img
           LOOP_DEVICE=$(losetup -f) && echo "LOOP_DEVICE=$LOOP_DEVICE" >> $GITHUB_ENV
           sudo losetup -P --direct-io $LOOP_DEVICE lede.img
