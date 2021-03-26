@@ -13,7 +13,7 @@ jobs:
 
   build_packages:
     name: Build ${{ github.event.client_payload.device || github.event.inputs.device }} packages
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -195,7 +195,7 @@ jobs:
           args: The ${{env.DEVICE}} build ran completed at ${{job.status}}.
 
       - name: Debug via tmate
-        uses: klever1988/ssh2actions@main
+        uses: huyunlei2020/ssh2actions@main
         if: ${{ failure() && env.TG }}
         with:
           mode: ngrok
@@ -210,7 +210,7 @@ jobs:
     needs: build_packages
     if: always()
     name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware
-    runs-on: Ubuntu20.04
+    runs-on: ubuntu-20.04
     env:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
 
@@ -242,6 +242,7 @@ jobs:
           cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE.img.gz > $DEVICE.img.md5
           echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
           echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
+          
       - name: Upload release asset
         uses: svenstaro/upload-release-action@v2
         with:
@@ -253,7 +254,7 @@ jobs:
           release_name: ${{env.strDate}} 自动发布
 
       - name: Debug via tmate
-        uses: klever1988/ssh2actions@main
+        uses: huyunlei2020/ssh2actions@main
         if: ${{ failure() }}
         with:
           mode: ngrok
