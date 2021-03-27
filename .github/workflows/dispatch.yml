@@ -4,7 +4,7 @@ on:
     inputs:
       device:
         description: 'select device to build'
-        default: 'r2s r4s r1s r1s-h3'
+        default: 'r2s'
         required: false
 
 jobs:
