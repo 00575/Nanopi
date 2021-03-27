@@ -1,4 +1,4 @@
-name: build R1S-H3
+name: build
 
 on:
   repository_dispatch:
@@ -6,7 +6,7 @@ on:
     inputs:
       device:
         description: 'select device to build'
-        default: 'r1s-h3'
+        default: 'r2s'
         required: false
 
 jobs:
