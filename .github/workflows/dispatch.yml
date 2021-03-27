@@ -1,6 +1,11 @@
 name: Repo Dispatcher
 on:
   workflow_dispatch:
+    inputs:
+      device:
+        description: 'select device to build'
+        default: 'r2s r4s r1s r1s-h3'
+        required: false
 
 jobs:
   build:
