@@ -2,10 +2,8 @@ name: Repo Dispatcher
 on:
   workflow_dispatch:
     inputs:
-      device:
-        description: 'select device to build'
-        default: 'r2s'
-        required: false
+  schedule:
+    - cron: '10 21 * * *'
 
 jobs:
   build:
