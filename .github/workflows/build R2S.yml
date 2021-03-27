@@ -1,7 +1,7 @@
 name: build R2S
 
 on:
-  repository_dispatch:
+  #repository_dispatch:
   workflow_dispatch:
     inputs:
       device:
