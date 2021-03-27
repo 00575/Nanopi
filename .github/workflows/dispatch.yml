@@ -2,6 +2,7 @@ name: Repo Dispatcher
 on:
   workflow_dispatch:
     inputs:
+      device:
   schedule:
     - cron: '10 21 * * *'
 
