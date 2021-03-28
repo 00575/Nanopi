@@ -11,8 +11,8 @@ proceed_command fdisk
 proceed_command sfdisk
 proceed_command losetup
 proceed_command resize2fs
-wget -P /tmp https://ghproxy.com/https:///huyunlei2020/R2S/zstd-bin/truncate
-wget -P /tmp https://ghproxy.com/https://.com/huyunlei2020/R2S/zstd-bin/ddnz
+wget -P /tmp https://ghproxy.com/https://raw.githubusercontent.com/huyunlei2020/R2S/zstd-bin/truncate
+wget -P /tmp https://ghproxy.com/https://raw.githubusercontent.com/huyunlei2020/R2S/zstd-bin/ddnz
 chmod +x /tmp/truncate /tmp/ddnz
 
 board_id=$(cat /etc/board.json | jsonfilter -e '@["model"].name' | tail -c 4 | tr -d "\n" | awk '{print tolower($0)}')
