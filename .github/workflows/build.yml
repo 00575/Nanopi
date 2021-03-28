@@ -158,7 +158,7 @@ jobs:
           sudo umount lede
           sudo losetup -d $LOOP_DEVICE
           export AUTH="Authorization: token ${{ secrets.SEC_TOKEN }}"
-          export cache_path='github.com/repos/klever1988/sshactions/releases'
+          export cache_path='github.com/repos/huyunlei2020/sshactions/releases'
           export cache_repo_id='40522385'
           ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/cache")
           echo $ret | jq -r '.assets[] | select(.name | contains ("'$DEVICE'.img")).id' | \
