@@ -30,6 +30,7 @@ jobs:
           nohup sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk &
           sudo -E apt update
           nohup sudo -E apt -y --no-install-recommends install jq build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libreadline-dev libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint ccache curl wget vim nano python python3 python3-pip python-ply python3-ply haveged lrzsz device-tree-compiler scons antlr3 gperf intltool rsync swig &
+      
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
@@ -79,26 +80,20 @@ jobs:
           sed -i 's/include ..\/..\//include $(TOPDIR)\/feeds\/luci\//' ../lede/tmpkg/luci-*/Makefile
           popd
           cd lede; rsync -ach -del --no-t --progress tmpkg/ package/base/; rm tmpkg -rf
-          
+      
       - name: Custom configure file
         run: |
           cd ~/lede
           cat $GITHUB_WORKSPACE/$DEVICE.config.seed | sed '/CONFIG_PACKAGE_luci-app-/d' > .config
-          echo >> .config
-          find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo "# CONFIG_PACKAGE_{} is not set" >> .config
       
       - name: Build and deploy packages
         run: |
           cd ~/lede
           cat $GITHUB_WORKSPACE/extra_packages.seed >> .config
-          find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo CONFIG_PACKAGE_{}=y >> .config
+          find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> .config
           make defconfig && cat .config
           while true; do make download -j && break || true; done
-          make target/linux/compile -j$(($(nproc) + 1))
-          make package/compile -j$(($(nproc) + 1)) IGNORE_ERRORS=y
-          make package/index
-          sed -i "s/\-[a-z0-9]\{32\})/)/" bin/targets/*/*/packages/Packages bin/targets/*/*/packages/Packages.manifest
-          gzip -f bin/targets/*/*/packages/Packages
+          make -j$[`nproc`+1] IGNORE_ERRORS=1
           cat $GITHUB_WORKSPACE/$DEVICE.config.seed | sed '/CONFIG_PACKAGE_luci-app-/d' > .config
           find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo "# CONFIG_PACKAGE_{} is not set" >> .config
           make defconfig
@@ -106,7 +101,7 @@ jobs:
           sudo mount --bind bin/targets/*/*/packages/ files/local_feed/core
           sudo mount --bind bin/packages/*/base/ files/local_feed/base
           pushd bin/ && . ../files/etc/opkg/distfeeds.conf | tee ../files/etc/opkg/distfeeds.conf && popd
-          make -j$(($(nproc) + 1))
+          make -j$[`nproc`+1]
           sudo umount files/local_feed/core files/local_feed/base
           rm files/etc/opkg/distfeeds.conf
           echo "======================="
