@@ -3,9 +3,7 @@ name: Cleaning
 on:
   schedule:
     - cron: 1 1 * * 1
-  watch:
-    types: started
-
+    
 jobs:
   
   Cleanup-Old-Releases:
@@ -15,10 +13,10 @@ jobs:
     - name: Delete Older Releases
       uses: dev-drprasad/delete-older-releases@master
       with:
-        keep_latest: 9
+        keep_latest: 15
         delete_tags: true
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.workflow_token }}
 
   Cleanup-Old-Artifacts:
     runs-on: ubuntu-20.04
