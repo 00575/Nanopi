@@ -1,8 +1,10 @@
 name: build
 
 on:
-  repository_dispatch:
-  workflow_dispatch:
+push:
+    branches: [ master ]
+    repository_dispatch:
+    workflow_dispatch:
     inputs:
       device:
         description: 'select device to build'
