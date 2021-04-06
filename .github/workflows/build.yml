@@ -221,20 +221,6 @@ jobs:
     name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware
     runs-on: ubuntu-18.04
     env:
-      DEVICE: r2s
-
-    steps:
-
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-
-  generate_firmware:
-    needs: build_packages
-    if: always()
-    name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware
-    runs-on: ubuntu-18.04
-    env:
     env:
       DEVICE: r2s
 
