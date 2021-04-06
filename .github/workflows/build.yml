@@ -1,20 +1,17 @@
 name: build
 
 on:
-  repository_dispatch:
   workflow_dispatch:
-    inputs:
-      device:
-        description: 'select device to build'
-        default: 'r2s'
-        required: false
+  schedule:
+    - cron: '10 22 * * *'
+    
 jobs:
 
   build_packages:
     name: Build ${{ github.event.client_payload.device || github.event.inputs.device }} packages
     runs-on: ubuntu-18.04
     env:
-      DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
+      DEVICE: r2s
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       DEPLOY_SSHKEY: ${{ secrets.SSH_KEY }}
     if: github.repository_owner=='huyunlei2020'
@@ -177,7 +174,7 @@ jobs:
     name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} slim firmware
     runs-on: ubuntu-18.04
     env:
-      DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
+      DEVICE: r2s
 
     steps:
 
@@ -224,7 +221,7 @@ jobs:
     name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware
     runs-on: ubuntu-18.04
     env:
-      DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
+      DEVICE: r2s
 
     steps:
 
@@ -232,13 +229,14 @@ jobs:
         with:
           fetch-depth: 1
 
-      generate_firmware:
+  generate_firmware:
     needs: build_packages
     if: always()
     name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware
     runs-on: ubuntu-18.04
     env:
-      DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
+    env:
+      DEVICE: r2s
 
     steps:
 
