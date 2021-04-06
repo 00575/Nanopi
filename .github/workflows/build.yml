@@ -1,17 +1,13 @@
 name: build
 
 on:
-push:
-    branches: [ master ]
-    repository_dispatch:
-    workflow_dispatch:
+  repository_dispatch:
+  workflow_dispatch:
     inputs:
       device:
         description: 'select device to build'
         default: 'r2s'
         required: false
-
-
 jobs:
 
   build_packages:
