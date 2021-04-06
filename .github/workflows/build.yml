@@ -233,6 +233,20 @@ jobs:
         with:
           fetch-depth: 1
 
+      generate_firmware:
+    needs: build_packages
+    if: always()
+    name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware
+    runs-on: ubuntu-18.04
+    env:
+      DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
+
+    steps:
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
       - name: Generate firmware
         run: |
           sudo sysctl vm.swappiness=0
