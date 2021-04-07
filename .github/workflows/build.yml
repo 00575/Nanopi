@@ -54,7 +54,7 @@ jobs:
           else
           sudo chown $USER:$(id -gn) lede && git clone -b openwrt-18.06-k5.4 --single-branch https://github.com/immortalwrt/immortalwrt lede
           fi
-          
+      
       - name: Update feeds and packages
         run: |
           cd ~/lede
@@ -64,39 +64,33 @@ jobs:
             pushd feeds/routing; git restore .; popd
             pushd feeds/telephony; git restore .; popd
           fi
-          [ -d package/base ] && mv package/base ~/
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-          [ -d ~/base ] && mv ~/base package/
           . $GITHUB_WORKSPACE/patches.sh
           . $GITHUB_WORKSPACE/merge_packages.sh
-          mkdir -p tmpkg; cd ../
-          svn export https://github.com/openwrt/packages/trunk packages
-          pushd packages
-          ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/packages/{} | grep Only | grep lede | grep -v -E lang\|devel\|ovn | awk '{print $3 $4}' | tr -d ':' | xargs -n1 -i mv {} ../lede/tmpkg/
-          sed -i 's/include ..\/..\//include $(TOPDIR)\/feeds\/packages\//' ../lede/tmpkg/*/Makefile ../lede/feeds/packages/devel/ninja/ninja-cmake.mk
-          popd
+          cd
           svn export https://github.com/openwrt/luci/branches/openwrt-18.06 luci
+          echo > more_luci.txt
           pushd luci
-          ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/luci/{} | grep Only | grep lede | grep -E applications\|themes | awk '{print $3 $4}' | tr -d ':' | xargs -n1 -i mv {} ../lede/tmpkg/
-          sed -i 's/include ..\/..\//include $(TOPDIR)\/feeds\/luci\//' ../lede/tmpkg/luci-*/Makefile
+          ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/luci/{} | grep Only | grep lede | grep -E applications\|themes | awk '{print $4}' | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> ~/lede/more_luci.txt
           popd
-          cd lede; rsync -ach -del --no-t --progress tmpkg/ package/base/; rm tmpkg -rf
-          
+      
       - name: Custom configure file
         run: |
           cd ~/lede
-          cat $GITHUB_WORKSPACE/$DEVICE.config.seed | sed 's/\(CONFIG_PACKAGE_luci-app-.*=\)y/\1m/' > .config
-          
+          cat $GITHUB_WORKSPACE/$DEVICE.config.seed | sed 's/\(CONFIG_PACKAGE_luci-app-[^A-Z]*=\)y/\1m/' > .config
+          find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> .config
+          cat $GITHUB_WORKSPACE/extra_packages.seed >> .config
+          cat more_luci.txt >> .config
+          make defconfig && cat .config
+      
       - name: Build and deploy packages
         run: |
           cd ~/lede
-          cat $GITHUB_WORKSPACE/extra_packages.seed >> .config
-          find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> .config
-          make defconfig && cat .config
           while true; do make download -j && break || true; done
           make -j$[`nproc`+1] IGNORE_ERRORS=1
           mv `ls ~/lede/bin/targets/*/*/*imagebuilder*xz` ~/ib-$DEVICE.tar.xz
+          
           echo "======================="
           echo "Space usage:"
           echo "======================="
@@ -105,7 +99,7 @@ jobs:
           du -h --max-depth=1 ./ --exclude=build_dir --exclude=bin
           du -h --max-depth=1 ./build_dir
           du -h --max-depth=1 ./bin
-          
+      
       - name: Prepare artifact
         run: |
           cd
@@ -121,22 +115,12 @@ jobs:
           cd ..
           mv artifact release $GITHUB_WORKSPACE
           cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE-slim.img.gz > $DEVICE-slim.img.md5
-          
+      
       - name: Deliver buildinfo
         uses: actions/upload-artifact@v2
         with:
           name: OpenWrt_buildinfo
           path: ./artifact/buildinfo/
-
-      - name: Upload release asset
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.workflow_token }}
-          file: ./release/*
-          tag: ${{env.strDate}}
-          file_glob: true
-          overwrite: true
-          release_name: ${{env.strDate}} 自动发布
 
       - name: Save cache state
         #if: env.TG
@@ -197,21 +181,19 @@ jobs:
           sudo sysctl vm.swappiness=0
           curl -L https://github.com/huyunlei2020/sshactions/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
           mv *imagebuilder* ib && cd ib
-          mv $GITHUB_WORKSPACE/files ./
-          chmod 600 files/etc/dropbear/*
-          eval `cat .config | grep \" | head -n 10`
-          . files/etc/opkg/distfeeds.conf | tee files/etc/opkg/distfeeds.conf
+          . $GITHUB_WORKSPACE/merge_files.sh
           mkdir -p files/local_feed && sudo mount --bind packages files/local_feed
           sed -i 's/luci-app-[^ ]*//g' include/target.mk $(find target/ -name Makefile)
           sed -i 's/$(OPKG) install $(BUILD_PACKAGES)/$(OPKG) install --force-overwrite $(BUILD_PACKAGES)/' Makefile
           PACKAGES=$(cat $GITHUB_WORKSPACE/$DEVICE.config.seed | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d' | grep -v luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs echo)
           make image PACKAGES="$PACKAGES $LUCI $LP luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn" FILES="files"
+          
           mkdir -p $GITHUB_WORKSPACE/release
           mv $(ls -1 ./bin/targets/*/*/*img.gz) $GITHUB_WORKSPACE/release/$DEVICE-slim.img.gz
           cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE-slim.img.gz > $DEVICE-slim.img.md5
           echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
           echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
-          
+      
       - name: Upload release asset
         uses: svenstaro/upload-release-action@v2
         with:
@@ -239,26 +221,23 @@ jobs:
       - name: Generate firmware
         run: |
           sudo sysctl vm.swappiness=0
-          curl -L https://github.com/klever1988/sshactions/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
+          curl -L https://github.com/huyunlei2020/sshactions/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
           mv *imagebuilder* ib && cd ib
-          mv $GITHUB_WORKSPACE/files ./
-          chmod 600 files/etc/dropbear/*
-          eval `cat .config | grep \" | head -n 10`
-          . files/etc/opkg/distfeeds.conf | tee files/etc/opkg/distfeeds.conf
+          . $GITHUB_WORKSPACE/merge_files.sh
           sed -i '/local/d;s/#//' files/etc/opkg/distfeeds.conf
-          cat files/etc/opkg/distfeeds.conf
           sed -i 's/luci-app-[^ ]*//g' include/target.mk $(find target/ -name Makefile)
           sed -i 's/$(OPKG) install $(BUILD_PACKAGES)/$(OPKG) install --force-overwrite $(BUILD_PACKAGES)/' Makefile
           PACKAGES=$(cat $GITHUB_WORKSPACE/$DEVICE.config.seed | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d' | grep -v luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs echo)
-          LUCI=$(echo $PACKAGES `cat $GITHUB_WORKSPACE/$DEVICE.config.seed | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d' | grep luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//'`)
-          LP=$(cd packages; echo $LUCI | sed 's/app/i18n/' | xargs -n1 -i sh -c 'ls {}-zh-cn* 2>/dev/null' | sed 's/zh-.*.ipk/zh-cn/')
+          LUCI=$(echo `cat $GITHUB_WORKSPACE/$DEVICE.config.seed | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d' | grep luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//'`)
+          LP=$(cd packages; echo $LUCI | sed 's/-app-/-i18n-/g;s/ /\n/g' | xargs -n1 -i sh -c 'ls {}-zh-cn* 2>/dev/null' | sed 's/zh-.*.ipk/zh-cn/' | xargs echo)
           make image PACKAGES="$PACKAGES $LUCI $LP luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn" FILES="files"
+          
           mkdir -p $GITHUB_WORKSPACE/release
           mv $(ls -1 ./bin/targets/*/*/*img.gz) $GITHUB_WORKSPACE/release/$DEVICE.img.gz
           cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE.img.gz > $DEVICE.img.md5
           echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
           echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
-          
+      
       - name: Upload release asset
         uses: svenstaro/upload-release-action@v2
         with:
