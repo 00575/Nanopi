@@ -54,7 +54,7 @@ jobs:
           else
           sudo chown $USER:$(id -gn) lede && git clone -b openwrt-18.06-k5.4 --single-branch https://github.com/immortalwrt/immortalwrt lede
           fi
-      
+          
       - name: Update feeds and packages
         run: |
           cd ~/lede
@@ -64,16 +64,24 @@ jobs:
             pushd feeds/routing; git restore .; popd
             pushd feeds/telephony; git restore .; popd
           fi
+          [ -d package/base ] && mv package/base ~/
           ./scripts/feeds update -a
           ./scripts/feeds install -a
+          [ -d ~/base ] && mv ~/base package/
           . $GITHUB_WORKSPACE/patches.sh
           . $GITHUB_WORKSPACE/merge_packages.sh
-          cd
-          svn export https://github.com/openwrt/luci/branches/openwrt-18.06 luci
-          echo > more_luci.txt
-          pushd luci
-          ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/luci/{} | grep Only | grep lede | grep -E applications\|themes | awk '{print $4}' | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> ~/lede/more_luci.txt
+          mkdir -p tmpkg; cd ../
+          svn export https://github.com/openwrt/packages/trunk packages
+          pushd packages
+          ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/packages/{} | grep Only | grep lede | grep -v -E lang\|devel\|ovn | awk '{print $3 $4}' | tr -d ':' | xargs -n1 -i mv {} ../lede/tmpkg/
+          sed -i 's/include ..\/..\//include $(TOPDIR)\/feeds\/packages\//' ../lede/tmpkg/*/Makefile ../lede/feeds/packages/devel/ninja/ninja-cmake.mk
           popd
+          svn export https://github.com/openwrt/luci/branches/openwrt-18.06 luci
+          pushd luci
+          ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/luci/{} | grep Only | grep lede | grep -E applications\|themes | awk '{print $3 $4}' | tr -d ':' | xargs -n1 -i mv {} ../lede/tmpkg/
+          sed -i 's/include ..\/..\//include $(TOPDIR)\/feeds\/luci\//' ../lede/tmpkg/luci-*/Makefile
+          popd
+          cd lede; rsync -ach -del --no-t --progress tmpkg/ package/base/; rm tmpkg -rf
       
       - name: Custom configure file
         run: |
