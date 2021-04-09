@@ -41,7 +41,7 @@ jobs:
           curl -sL https://raw.githubusercontent.com/huyunlei2020/R2S/zstd-bin/zstd | sudo tee /usr/bin/zstd > /dev/null
           for i in {1..10}
           do
-            curl -sL --fail https://github.com/huyunlei2020/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
+            curl -sL --fail https://github.com/klever1988/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
           done | zstdmt -d -o lede.img || (truncate -s 20g lede.img && mkfs.btrfs -M lede.img)
           LOOP_DEVICE=$(losetup -f) && echo "LOOP_DEVICE=$LOOP_DEVICE" >> $GITHUB_ENV
           sudo losetup -P --direct-io $LOOP_DEVICE lede.img
@@ -54,7 +54,7 @@ jobs:
           else
           sudo chown $USER:$(id -gn) lede && git clone -b openwrt-18.06-k5.4 --single-branch https://github.com/immortalwrt/immortalwrt lede
           fi
-          
+      
       - name: Update feeds and packages
         run: |
           cd ~/lede
@@ -64,24 +64,16 @@ jobs:
             pushd feeds/routing; git restore .; popd
             pushd feeds/telephony; git restore .; popd
           fi
-          [ -d package/base ] && mv package/base ~/
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-          [ -d ~/base ] && mv ~/base package/
           . $GITHUB_WORKSPACE/patches.sh
           . $GITHUB_WORKSPACE/merge_packages.sh
-          mkdir -p tmpkg; cd ../
-          svn export https://github.com/openwrt/packages/trunk packages
-          pushd packages
-          ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/packages/{} | grep Only | grep lede | grep -v -E lang\|devel\|ovn | awk '{print $3 $4}' | tr -d ':' | xargs -n1 -i mv {} ../lede/tmpkg/
-          sed -i 's/include ..\/..\//include $(TOPDIR)\/feeds\/packages\//' ../lede/tmpkg/*/Makefile ../lede/feeds/packages/devel/ninja/ninja-cmake.mk
-          popd
+          cd
           svn export https://github.com/openwrt/luci/branches/openwrt-18.06 luci
+          echo > more_luci.txt
           pushd luci
-          ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/luci/{} | grep Only | grep lede | grep -E applications\|themes | awk '{print $3 $4}' | tr -d ':' | xargs -n1 -i mv {} ../lede/tmpkg/
-          sed -i 's/include ..\/..\//include $(TOPDIR)\/feeds\/luci\//' ../lede/tmpkg/luci-*/Makefile
+          ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/luci/{} | grep Only | grep lede | grep -E applications\|themes | awk '{print $4}' | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> ~/lede/more_luci.txt
           popd
-          cd lede; rsync -ach -del --no-t --progress tmpkg/ package/base/; rm tmpkg -rf
       
       - name: Custom configure file
         run: |
@@ -112,17 +104,14 @@ jobs:
         run: |
           cd
           mkdir -p ./artifact/buildinfo
-          mkdir -p ./release
           cd lede
           cp -rf $(find ./bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ../artifact/buildinfo/
           cp -rf .config ../artifact/buildinfo/
-          mv $(ls -1 ./bin/targets/*/*/*img.gz) ../release/$DEVICE-slim.img.gz
           echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
           echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
           rm -rf bin tmp
           cd ..
-          mv artifact release $GITHUB_WORKSPACE
-          cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE-slim.img.gz > $DEVICE-slim.img.md5
+          mv artifact $GITHUB_WORKSPACE
       
       - name: Deliver buildinfo
         uses: actions/upload-artifact@v2
@@ -198,7 +187,8 @@ jobs:
           
           mkdir -p $GITHUB_WORKSPACE/release
           mv $(ls -1 ./bin/targets/*/*/*img.gz) $GITHUB_WORKSPACE/release/$DEVICE-slim.img.gz
-          cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE-slim.img.gz > $DEVICE-slim.img.md5
+          cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE-slim.img.gz > $DEVICE-slim.img.gz.md5
+          gzip -dc $DEVICE-slim.img.gz | md5sum | sed "s/-/$DEVICE-slim.img/" > $DEVICE-slim.img.md5
           echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
           echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
       
@@ -242,7 +232,8 @@ jobs:
           
           mkdir -p $GITHUB_WORKSPACE/release
           mv $(ls -1 ./bin/targets/*/*/*img.gz) $GITHUB_WORKSPACE/release/$DEVICE.img.gz
-          cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE.img.gz > $DEVICE.img.md5
+          cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE.img.gz > $DEVICE.img.gz.md5
+          gzip -dc $DEVICE.img.gz | md5sum | sed "s/-/$DEVICE.img/" > $DEVICE.img.md5
           echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
           echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
       
