@@ -218,11 +218,7 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Generate firmware
-        run: |
-          sudo sysctl vm.swappiness=0
-          curl -L https://github.com/huyunlei2020/sshactions/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
-          mv *imagebuilder* ib && cd ib
+      mv *imagebuilder* ib && cd ib
           . $GITHUB_WORKSPACE/merge_files.sh
           sed -i '/local/d;s/#//' files/etc/opkg/distfeeds.conf
           sed -i 's/luci-app-[^ ]*//g' include/target.mk $(find target/ -name Makefile)
@@ -263,11 +259,7 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Generate firmware
-        run: |
-          sudo sysctl vm.swappiness=0
-          curl -L https://github.com/huyunlei2020/sshactions/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
-          mv *imagebuilder* ib && cd ib
+      mv *imagebuilder* ib && cd ib
           . $GITHUB_WORKSPACE/merge_files.sh
           sed -i '/local/d;s/#//' files/etc/opkg/distfeeds.conf
           sed -i 's/luci-app-[^ ]*//g' include/target.mk $(find target/ -name Makefile)
