@@ -18,7 +18,7 @@ jobs:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       DEPLOY_SSHKEY: ${{ secrets.SSH_KEY }}
-    if: github.repository_owner=='huyunlei2020'
+    if: github.repository_owner=='a0575'
 
     steps:
 
@@ -151,7 +151,7 @@ jobs:
           curl -k --data chat_id="${{secrets.TELEGRAM_CHAT_ID}}" --data "text=The ${{env.DEVICE}} build ran completed at ${{job.status}}." "https://api.telegram.org/bot${{secrets.TELEGRAM_BOT_TOKEN}}/sendMessage"
       
       - name: Debug via tmate
-        uses: huyunlei2020/ssh2actions@main
+        uses: a0575/ssh2actions@main
         if: ${{ failure() && env.TG }}
         with:
           mode: ngrok
