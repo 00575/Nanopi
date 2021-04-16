@@ -204,7 +204,7 @@ jobs:
           overwrite: true
           release_name: ${{env.strDate}} 自动发布
 
-generate_firmware:
+  generate_firmware:
     needs: build_packages
     if: always()
     name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware
