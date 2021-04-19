@@ -8,7 +8,6 @@ on:
         description: 'select device to build'
         default: 'r2s'
         required: false
-
 jobs:
 
   build_packages:
@@ -18,7 +17,7 @@ jobs:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       DEPLOY_SSHKEY: ${{ secrets.SSH_KEY }}
-    if: github.repository_owner=='a0575'
+    if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
 
@@ -38,10 +37,10 @@ jobs:
       - name: Checkout
         run: |
           cd
-          curl -sL https://raw.githubusercontent.com/a0575/R2S/zstd-bin/zstd | sudo tee /usr/bin/zstd > /dev/null
+          curl -sL https://raw.githubusercontent.com/a0575/Nanopi/zstd-bin/zstd | sudo tee /usr/bin/zstd > /dev/null
           for i in {1..10}
           do
-            curl -sL --fail https://github.com/a0575/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
+            curl -sL --fail https://github.com/klever1988/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
           done | zstdmt -d -o lede.img || (truncate -s 20g lede.img && mkfs.btrfs -M lede.img)
           LOOP_DEVICE=$(losetup -f) && echo "LOOP_DEVICE=$LOOP_DEVICE" >> $GITHUB_ENV
           sudo losetup -P --direct-io $LOOP_DEVICE lede.img
@@ -88,8 +87,10 @@ jobs:
         run: |
           cd ~/lede
           while true; do make download -j && break || true; done
+        
           #make package/feeds/packages/v2ray-plugin/compile || true
           #sed -i 's/Kf9Qot2lLYccEzQfoCdt9img6zo5Vf+PEaoTMfa2S8k=/FGmf5rtUo3xGHyZGJi8jEa7AKin05ROfPtegmGbkCKg=/' build_dir/*/v2ray-plugin-4.37.3/go.sum
+          
           make -j$[`nproc`+1] IGNORE_ERRORS=1
           mv `ls ~/lede/bin/targets/*/*/*imagebuilder*xz` ~/ib-$DEVICE.tar.xz
           
@@ -102,25 +103,6 @@ jobs:
           du -h --max-depth=1 ./build_dir
           du -h --max-depth=1 ./bin
       
-      - name: Prepare artifact
-        run: |
-          cd
-          mkdir -p ./artifact/buildinfo
-          cd lede
-          cp -rf $(find ./bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ../artifact/buildinfo/
-          cp -rf .config ../artifact/buildinfo/
-          echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
-          echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
-          rm -rf bin tmp
-          cd ..
-          mv artifact $GITHUB_WORKSPACE
-      
-      - name: Deliver buildinfo
-        uses: actions/upload-artifact@v2
-        with:
-          name: OpenWrt_buildinfo
-          path: ./artifact/buildinfo/
-
       - name: Save cache state
         #if: env.TG
         run: |
@@ -129,8 +111,8 @@ jobs:
           sudo umount lede
           sudo losetup -d $LOOP_DEVICE
           export AUTH="Authorization: token ${{ secrets.workflow_token }}"
-          export cache_path='github.com/repos/a0575/sshactions/releases'
-          export cache_repo_id='40522385'
+          export cache_path='github.com/repos/00575/Nanopi/releases'
+          export cache_repo_id='41637325'
           ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/cache")
           echo $ret | jq -r '.assets[] | select(.name | contains ("'$DEVICE'.img")).id' | \
           xargs -n1 -i curl -X DELETE -H "$AUTH" "https://api.$cache_path/assets/{}"
@@ -145,151 +127,3 @@ jobs:
           #done
           ls *img.zst* ib-$DEVICE.tar.xz | parallel --wc 'while true; do curl -T {} -H "$AUTH" -H "Content-Type: application/octet-stream" "https://uploads.$cache_path/$cache_repo_id/assets?name={}" && break || true; done'
       
-      - name: Send tg notification
-        if: env.TG
-        run: |
-          curl -k --data chat_id="${{secrets.TELEGRAM_CHAT_ID}}" --data "text=The ${{env.DEVICE}} build ran completed at ${{job.status}}." "https://api.telegram.org/bot${{secrets.TELEGRAM_BOT_TOKEN}}/sendMessage"
-      
-      - name: Debug via tmate
-        uses: a0575/ssh2actions@main
-        if: ${{ failure() && env.TG }}
-        with:
-          mode: ngrok
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          SSH_PASSWORD: ${{secrets.SSH_PASSWORD}}
-          SSH_PUBKEY: ${{secrets.SSH_PUBKEY}}
-          NGROK_TOKEN: ${{secrets.NGROK_TOKEN}}
-
-  generate_slim_firmware:
-    needs: build_packages
-    name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} slim firmware
-    runs-on: ubuntu-18.04
-    env:
-      DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
-
-    steps:
-
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-
-      - name: Generate firmware
-        run: |
-          sudo sysctl vm.swappiness=0
-          curl -L https://github.com/a0575/sshactions/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
-          mv *imagebuilder* ib && cd ib
-          . $GITHUB_WORKSPACE/merge_files.sh
-          mkdir -p files/local_feed && sudo mount --bind packages files/local_feed
-          sed -i 's/luci-app-[^ ]*//g' include/target.mk $(find target/ -name Makefile)
-          sed -i 's/$(OPKG) install $(BUILD_PACKAGES)/$(OPKG) install --force-overwrite $(BUILD_PACKAGES)/' Makefile
-          PACKAGES=$(cat $GITHUB_WORKSPACE/$DEVICE.config.seed | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d' | grep -v luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs echo)
-          make image PACKAGES="$PACKAGES $LUCI $LP luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn" FILES="files"
-          
-          mkdir -p $GITHUB_WORKSPACE/release
-          mv $(ls -1 ./bin/targets/*/*/*img.gz) $GITHUB_WORKSPACE/release/$DEVICE-slim.img.gz
-          cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE-slim.img.gz > $DEVICE-slim.img.gz.md5
-          gzip -dc $DEVICE-slim.img.gz | md5sum | sed "s/-/$DEVICE-slim.img/" > $DEVICE-slim.img.md5
-          echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
-          echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
-      
-      - name: Upload release asset
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.workflow_token }}
-          file: ./release/*
-          tag: ${{env.strDate}}
-          file_glob: true
-          overwrite: true
-          release_name: ${{env.strDate}} 自动发布
-
-  generate_firmware:
-    needs: build_packages
-    if: always()
-    name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware
-    runs-on: ubuntu-18.04
-    env:
-      DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
-
-    steps:
-
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-
-      - name: Generate firmware
-        run: |
-          sudo sysctl vm.swappiness=0
-          curl -L https://github.com/a0575/sshactions/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
-          mv *imagebuilder* ib && cd ib
-          . $GITHUB_WORKSPACE/merge_files.sh
-          sed -i '/local/d;s/#//' files/etc/opkg/distfeeds.conf
-          sed -i 's/luci-app-[^ ]*//g' include/target.mk $(find target/ -name Makefile)
-          sed -i 's/$(OPKG) install $(BUILD_PACKAGES)/$(OPKG) install --force-overwrite $(BUILD_PACKAGES)/' Makefile
-          PACKAGES=$(cat $GITHUB_WORKSPACE/$DEVICE.config.seed | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d' | grep -v luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs echo)
-          LUCI=$(echo `cat $GITHUB_WORKSPACE/$DEVICE.config.seed | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d;/docker/d' | grep luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//'`)
-          LP=$(cd packages; echo $LUCI | sed 's/-app-/-i18n-/g;s/ /\n/g' | xargs -n1 -i sh -c 'ls {}-zh-cn* 2>/dev/null' | sed 's/zh-.*.ipk/zh-cn/' | xargs echo)
-          make image PACKAGES="$PACKAGES $LUCI $LP luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn" FILES="files"
-          
-          mkdir -p $GITHUB_WORKSPACE/release
-          mv $(ls -1 ./bin/targets/*/*/*img.gz) $GITHUB_WORKSPACE/release/$DEVICE.img.gz
-          cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE.img.gz > $DEVICE.img.gz.md5
-          gzip -dc $DEVICE.img.gz | md5sum | sed "s/-/$DEVICE.img/" > $DEVICE.img.md5
-          echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
-          echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
-      
-      - name: Upload release asset
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.workflow_token }}
-          file: ./release/*
-          tag: ${{env.strDate}}
-          file_glob: true
-          overwrite: true
-          release_name: ${{env.strDate}} 自动发布
-
-  generate_firmware_with_docker:
-    needs: build_packages
-    if: always()
-    name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware with docker
-    runs-on: ubuntu-18.04
-    env:
-      DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
-
-    steps:
-
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-
-      - name: Generate firmware
-        run: |
-          sudo sysctl vm.swappiness=0
-          curl -L https://github.com/a0575/sshactions/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
-          mv *imagebuilder* ib && cd ib
-          . $GITHUB_WORKSPACE/merge_files.sh
-          sed -i '/local/d;s/#//' files/etc/opkg/distfeeds.conf
-          sed -i 's/luci-app-[^ ]*//g' include/target.mk $(find target/ -name Makefile)
-          sed -i 's/$(OPKG) install $(BUILD_PACKAGES)/$(OPKG) install --force-overwrite $(BUILD_PACKAGES)/' Makefile
-          PACKAGES=$(cat $GITHUB_WORKSPACE/$DEVICE.config.seed | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d' | grep -v luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs echo)
-          LUCI=$(echo `cat $GITHUB_WORKSPACE/$DEVICE.config.seed | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d' | grep luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//'`)
-          LP=$(cd packages; echo $LUCI | sed 's/-app-/-i18n-/g;s/ /\n/g' | xargs -n1 -i sh -c 'ls {}-zh-cn* 2>/dev/null' | sed 's/zh-.*.ipk/zh-cn/' | xargs echo)
-          make image PACKAGES="$PACKAGES $LUCI $LP luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn" FILES="files"
-          
-          mkdir -p $GITHUB_WORKSPACE/release
-          mv $(ls -1 ./bin/targets/*/*/*img.gz) $GITHUB_WORKSPACE/release/$DEVICE-with-docker.img.gz
-          cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE-with-docker.img.gz > $DEVICE-with-docker.img.gz.md5
-          gzip -dc $DEVICE-with-docker.img.gz | md5sum | sed "s/-/$DEVICE-with-docker.img/" > $DEVICE-with-docker.img.md5
-          echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
-          echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
-      
-      - name: Upload release asset
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.workflow_token }}
-          file: ./release/*
-          tag: ${{env.strDate}}
-          file_glob: true
-          overwrite: true
-          release_name: ${{env.strDate}} 自动发布
