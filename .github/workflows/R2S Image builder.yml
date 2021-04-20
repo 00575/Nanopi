@@ -1,13 +1,13 @@
-name: Build Image builder
+name: R2S Image builder
 
 on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
-      device:
-        description: 'select device to build'
-        default: 'r2s'
-        required: false
+      device: r2s
+        #description: 'select device to build'
+        #default: 'r2s'
+        #required: false
 jobs:
 
   build_packages:
