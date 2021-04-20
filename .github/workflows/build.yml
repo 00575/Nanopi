@@ -104,15 +104,21 @@ jobs:
       - name: Prepare artifact
         run: |
           cd
+          mkdir -p ./artifact/firmware
+          mkdir -p ./artifact/package
+          mkdir -p ./release
           cd lede
           cp -a bin tmp ../
+          rm -rf $(find ./bin/targets/ -type d -name "packages")
+          cp -rf $(find ./bin/targets/ -type f) ../artifact/firmware/
           cp -rf $(find ./bin/packages/ -type f -name "*.ipk") ../artifact/package/
+          cp $(ls -1 ../artifact/firmware/*img*) ../release/$DEVICE.img.gz
           echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
           echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
           rm -rf bin tmp
-          zip -r ../artifact/ipk.zip ../artifact/package/*.ipk
+          zip -r ../release/ipk.zip ../artifact/package/*.ipk
           cd ..
-          mv artifact $GITHUB_WORKSPACE
+          mv artifact release $GITHUB_WORKSPACE
           
       #- name: Deliver artifact
         #uses: actions/upload-artifact@v2
@@ -124,7 +130,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.workflow_token }}
-          file: ./artifact/ipk.zip
+          file: ./release/*
           tag: ${{env.strDate}}
           file_glob: true
           overwrite: true
