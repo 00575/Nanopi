@@ -10,8 +10,8 @@ on:
         required: false
 jobs:
 
-  build_packages:
-    name: Build ${{ github.event.client_payload.device || github.event.inputs.device }} packages
+  build_Image builder:
+    name: Build ${{ github.event.client_payload.device || github.event.inputs.device }} Image builder
     runs-on: ubuntu-18.04
     env:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
@@ -134,7 +134,7 @@ jobs:
           tag: ${{env.strDate}}
           file_glob: true
           overwrite: true
-          release_name: ${{env.strDate}} 自动发布
+          release_name: ${{env.strDate}} 纯净无插件
    
       - name: Save cache state
         #if: env.TG
