@@ -128,7 +128,7 @@ jobs:
           tag: ${{env.strDate}}
           file_glob: true
           overwrite: true
-          release_name: ${{env.strDate}} 纯净无插件
+          release_name: ${{env.strDate}} IPK插件
    
       - name: Save cache state
         #if: env.TG
