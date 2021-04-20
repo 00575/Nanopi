@@ -1,4 +1,4 @@
-##### Nanopi Image builder预编译
+#### Nanopi Image builder预编译
 
 #### 1-3分钟生成自己所需固件
 
@@ -12,5 +12,5 @@
 
 然后点击[Run]即可获取自己所需的固件
 
-##### Nanopi ipk插件包
+#### Nanopi ipk插件包
 https://github.com/00575/Nanopi/releases
