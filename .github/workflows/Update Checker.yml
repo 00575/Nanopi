@@ -6,8 +6,8 @@ env:
 
 on:
   workflow_dispatch:
-#  schedule:
-#    - cron: 0 */18 * * *
+  schedule:
+    - cron: 0 0 * * *
 
 jobs:
   check:
@@ -38,4 +38,4 @@ jobs:
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.workflow_token }}
-        event-type: Source Code Update
+        event-type: Update
