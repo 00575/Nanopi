@@ -1,4 +1,4 @@
-name: build
+name: Build Image builder
 
 on:
   repository_dispatch:
@@ -10,8 +10,8 @@ on:
         required: false
 jobs:
 
-  build_Image builder:
-    name: Build ${{ github.event.client_payload.device || github.event.inputs.device }} Image builder
+  build_packages:
+    name: Build ${{ github.event.client_payload.device || github.event.inputs.device }} packages
     runs-on: ubuntu-18.04
     env:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
