@@ -4,10 +4,10 @@ on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
-      device: r2s
-        #description: 'select device to build'
-        #default: 'r2s'
-        #required: false
+      device:
+        description: 'select device to build'
+        default: 'r2s'
+        required: false
 jobs:
 
   build_packages:
