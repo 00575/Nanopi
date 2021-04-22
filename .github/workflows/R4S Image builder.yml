@@ -125,10 +125,10 @@ jobs:
         with:
           repo_token: ${{ secrets.workflow_token }}
           file: ./artifact/*.zip
-          tag: ${{env.strDate}}
+          tag: ipk
           file_glob: true
           overwrite: true
-          release_name: ${{env.strDate}} IPK插件
+          release_name: ipk
    
       - name: Save cache state
         #if: env.TG
