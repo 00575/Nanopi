@@ -14,5 +14,5 @@
 
 然后点击[Run]即可获取自己所需的固件
 
-#### Nanopi ipk插件包
+#### ipk插件
 https://github.com/00575/Nanopi/releases
