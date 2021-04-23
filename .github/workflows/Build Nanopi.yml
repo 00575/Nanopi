@@ -12,7 +12,7 @@ on:
 jobs:
 
   build_packages:
-    name: Build r2s
+    name: Build ${{ github.event.client_payload.device || github.event.inputs.device }}
     runs-on: ubuntu-20.04
     env:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
