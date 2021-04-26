@@ -25,3 +25,20 @@ slim版固件只有OpenWrt本体，但内置了“本地软件源”，包含大
 输入你的设备名称（支持r2s r4s r1s r1s-h3 r1p x86 ）
 
 然后点击[Run]即可获取自己所需的固件
+
+### 终端内在线升级方法： 
+
+多插件版
+```bash
+wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate.sh | sh
+```
+
+slim纯净版
+```bash
+wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate.sh | ver=-slim sh
+```
+
+docker版
+```bash
+wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate.sh | ver=-with-docker sh
+```
