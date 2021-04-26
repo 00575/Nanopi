@@ -10,7 +10,7 @@
 
 点击右侧[Run workflow]
 
-输入你的设备名称（支持r2s r4s r1s r1s-h3 r1p）
+输入你的设备名称（支持r2s r4s r1s r1s-h3 r1p x86 ）
 
 然后点击[Run]即可获取自己所需的固件
 
