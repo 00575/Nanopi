@@ -1,4 +1,14 @@
-#### Nanopi Image builder预编译
+### Nanopi-immortalwrt固件发布地址：
+https://github.com/00575/Nanopi/releases
+(支持r1s r2s r4s r1p r1s-h3 x86 内含ipk压缩包)
+登录IP：192.168.2.1 默认用户名：root 密码：password
+
+### 固件特性：
+
+slim版固件只有OpenWrt本体，但内置了“本地软件源”，包含大部分常用插件，不喜欢固件预装繁杂插件的人可以选择这个版本，进入后台软件包选装所需插件
+
+采用ext4文件系统，刷卡之后可自行使用分区工具对sd卡扩容根分区至最大。使用在线升级时，根分区会自动扩容，方便折腾
+
 
 #### 1-3分钟生成自己所需固件
 
@@ -13,6 +23,3 @@
 输入你的设备名称（支持r2s r4s r1s r1s-h3 r1p x86 ）
 
 然后点击[Run]即可获取自己所需的固件
-
-#### ipk插件
-https://github.com/00575/Nanopi/releases
