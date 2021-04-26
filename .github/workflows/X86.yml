@@ -41,7 +41,7 @@ jobs:
           for i in {1..10}
           do
             curl -sL --fail https://github.com/00575/Nanopi/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
-          done | zstdmt -d -o lede.img || (truncate -s 20g lede.img && mkfs.btrfs -M lede.img)
+          done | zstdmt -d -o lede.img || (truncate -s 22g lede.img && mkfs.btrfs -M lede.img)
           LOOP_DEVICE=$(losetup -f) && echo "LOOP_DEVICE=$LOOP_DEVICE" >> $GITHUB_ENV
           sudo losetup -P --direct-io $LOOP_DEVICE lede.img
           mkdir lede && sudo mount -o nossd,compress=zstd $LOOP_DEVICE lede
@@ -118,10 +118,10 @@ jobs:
         with:
           repo_token: ${{ secrets.workflow_token }}
           file: ./artifact/*.zip
-          tag: ipk
+          tag: ${{env.strDate}}
           file_glob: true
           overwrite: true
-          release_name: ipk
+          release_name: ${{env.strDate}} 自动发布
    
       - name: Save cache state
         #if: env.TG
