@@ -1,4 +1,4 @@
-name: X86
+name: r1s
 
 on:
   repository_dispatch:
@@ -6,12 +6,12 @@ on:
     inputs:
       device:
         description: 'select device to build'
-        default: 'x86'
+        default: 'r1s'
         required: false
 jobs:
 
   build_packages:
-    name: Build x86 packages
+    name: Build r1s packages
     runs-on: ubuntu-20.04
     env:
       DEVICE: x86
@@ -98,6 +98,7 @@ jobs:
           du -h --max-depth=1 ./ --exclude=build_dir --exclude=bin
           du -h --max-depth=1 ./build_dir
           du -h --max-depth=1 ./bin
+          
       - name: Prepare artifact
         run: |
           cd
@@ -111,6 +112,7 @@ jobs:
           zip -r ../artifact/$DEVICE-ipk.zip ../artifact/package/*.ipk
           cd ..
           mv artifact $GITHUB_WORKSPACE
+          
       - name: Upload release asset
         uses: svenstaro/upload-release-action@v2
         with:
@@ -147,10 +149,10 @@ jobs:
  
   generate_slim_firmware:
     needs: build_packages  
-    name: Generate x86 slim firmware
+    name: Generate r1s slim firmware
     runs-on: ubuntu-20.04
     env:
-      DEVICE: x86 
+      DEVICE: r1s 
 
     steps:
 
@@ -190,10 +192,10 @@ jobs:
   generate_firmware:
     needs: build_packages
     if: always()  
-    name: Generate x86 firmware
+    name: Generate r1s firmware
     runs-on: ubuntu-20.04
     env:
-      DEVICE: x86
+      DEVICE: r1s
       
     steps:
 
@@ -235,10 +237,10 @@ jobs:
   generate_firmware_with_docker:
     needs: build_packages
     if: always()  
-    name: Generate x86 firmware with docker
+    name: Generate r1s firmware with docker
     runs-on: ubuntu-20.04
     env:
-      DEVICE: x86
+      DEVICE: r1s
       
     steps:
 
@@ -248,6 +250,9 @@ jobs:
 
       - name: Generate firmware
         run: |
+          if [[ ${{ github.event.client_payload.device || github.event.inputs.device }} == *"r1s"* ]]; then
+          sudo poweroff
+          fi
           sudo sysctl vm.swappiness=0
           curl -L https://github.com/00575/Nanopi/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
           mv *imagebuilder* ib && cd ib
