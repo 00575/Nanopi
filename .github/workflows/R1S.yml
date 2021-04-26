@@ -250,7 +250,6 @@ jobs:
 
       - name: Generate firmware
         run: |
-          sudo poweroff
           sudo sysctl vm.swappiness=0
           curl -L https://github.com/00575/Nanopi/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
           mv *imagebuilder* ib && cd ib
