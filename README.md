@@ -1,6 +1,8 @@
 ### Nanopi-immortalwrt固件发布地址：
 https://github.com/00575/Nanopi/releases
+
 (支持r1s r2s r4s r1p r1s-h3 x86 内含ipk压缩包)
+
 登录IP：192.168.2.1 默认用户名：root 密码：password
 
 ### 固件特性：
