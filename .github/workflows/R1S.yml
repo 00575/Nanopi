@@ -17,7 +17,7 @@ jobs:
       DEVICE: r1s
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       DEPLOY_SSHKEY: ${{ secrets.SSH_KEY }}
-    if: github.event.repository.owner.id == github.event.sender.id
+    if: github.repository_owner=='00575/Nanopi'
 
     steps:
 
