@@ -3,16 +3,12 @@ name: r4s
 on:
   repository_dispatch:
   workflow_dispatch:
-    #inputs:
-      #device:
-        #description: 'select device to build'
-        #default: 'r4s'
-        #required: false
+
 jobs:
 
   build_packages:
     name: Build r4s packages
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       DEVICE: r4s
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
