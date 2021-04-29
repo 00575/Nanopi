@@ -11,10 +11,10 @@ on:
 jobs:
 
   build_packages:
-    name: Build ${{ github.event.client_payload.device || github.event.inputs.device }} packages
+    name: Build r4s packages
     runs-on: ubuntu-18.04
     env:
-      DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
+      DEVICE: r4s
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       DEPLOY_SSHKEY: ${{ secrets.SSH_KEY }}
     if: github.repository_owner=='00575'
