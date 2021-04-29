@@ -3,11 +3,7 @@ name: r1p
 on:
   repository_dispatch:
   workflow_dispatch:
-    inputs:
-      device:
-        description: 'select device to build'
-        default: 'r1p'
-        required: false
+
 jobs:
 
   build_packages:
@@ -17,8 +13,8 @@ jobs:
       DEVICE: r1p
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       DEPLOY_SSHKEY: ${{ secrets.SSH_KEY }}
-    if: github.event.repository.owner.id == github.event.sender.id
-
+    if: github.repository_owner=='klever1988'
+    
     steps:
 
       - name: Space cleanup
