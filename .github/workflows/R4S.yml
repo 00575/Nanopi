@@ -130,7 +130,7 @@ jobs:
           sleep 120
           sudo umount lede
           sudo losetup -d $LOOP_DEVICE
-          export AUTH="Authorization: token ${{ secrets.SEC_TOKEN }}"
+          export AUTH="Authorization: token ${{ secrets.workflow_token }}"
           export cache_path='github.com/repos/00575/Nanopi/releases'
           export cache_repo_id='41637325'
           ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/cache")
@@ -146,7 +146,7 @@ jobs:
           #  while true; do curl --data-binary @$f -H "$AUTH" -H 'Content-Type: application/octet-stream' "https://uploads.$cache_path/$cache_repo_id/assets?name=$f" && break || true; done
           #done
           ls *img.zst* ib-$DEVICE.tar.xz | parallel --wc 'while true; do curl -T {} -H "$AUTH" -H "Content-Type: application/octet-stream" "https://uploads.$cache_path/$cache_repo_id/assets?name={}" && break || true; done'
- 
+
   generate_slim_firmware:
     needs: build_packages  
     name: Generate r4s slim firmware
