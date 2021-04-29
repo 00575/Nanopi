@@ -3,16 +3,12 @@ name: x86
 on:
   repository_dispatch:
   workflow_dispatch:
-    inputs:
-      device:
-        description: 'select device to build'
-        default: 'x86'
-        required: false
+  
 jobs:
 
   build_packages:
     name: Build x86 packages
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       DEVICE: x86
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
