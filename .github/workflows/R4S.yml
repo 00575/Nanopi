@@ -3,11 +3,11 @@ name: r4s
 on:
   repository_dispatch:
   workflow_dispatch:
-    inputs:
-      device:
-        description: 'select device to build'
-        default: 'r4s'
-        required: false
+    #inputs:
+      #device:
+        #description: 'select device to build'
+        #default: 'r4s'
+        #required: false
 jobs:
 
   build_packages:
