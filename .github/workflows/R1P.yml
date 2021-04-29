@@ -12,7 +12,7 @@ jobs:
 
   build_packages:
     name: Build r1p packages
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     env:
       DEVICE: r1p
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
