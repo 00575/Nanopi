@@ -13,7 +13,7 @@ jobs:
       DEVICE: r1p
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       DEPLOY_SSHKEY: ${{ secrets.SSH_KEY }}
-    if: github.repository_owner=='klever1988'
+    if: github.repository_owner=='00575'
     
     steps:
 
