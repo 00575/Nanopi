@@ -31,9 +31,9 @@ fi
 if [[ $DEVICE =~ ('r2s'|'r4s'|'r1p') ]]; then
     #wget https://github.com/coolsnowwolf/lede/raw/757e42d70727fe6b937bb31794a9ad4f5ce98081/target/linux/rockchip/config-default -NP target/linux/rockchip/
     wget https://github.com/coolsnowwolf/lede/blob/910af7e482376ee32006a71168961236cbdf8c29/target/linux/rockchip/config-default -NP target/linux/rockchip/
-    wget https://github.com/coolsnowwolf/lede/commit/f341ef96fe4b509a728ba1281281da96bac23673.patch
-    git apply f341ef96fe4b509a728ba1281281da96bac23673.patch
-    rm f341ef96fe4b509a728ba1281281da96bac23673.patch
+    #wget https://github.com/coolsnowwolf/lede/commit/f341ef96fe4b509a728ba1281281da96bac23673.patch
+    #git apply f341ef96fe4b509a728ba1281281da96bac23673.patch
+    #rm f341ef96fe4b509a728ba1281281da96bac23673.patch
 fi
 
 sed -i '/182.140.223.146/d' scripts/download.pl
