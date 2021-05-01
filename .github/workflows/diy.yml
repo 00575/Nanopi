@@ -1,7 +1,7 @@
 name: 自编译模板
 
 on:
-  repository_dispatch:
+  #repository_dispatch:
   workflow_dispatch:
     inputs:
       device:
