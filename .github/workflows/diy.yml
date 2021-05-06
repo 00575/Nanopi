@@ -54,12 +54,18 @@ jobs:
           echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
           echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
           
-      - name: Upload release asset
-        uses: svenstaro/upload-release-action@v2
+      - name: Deliver firmware
+        uses: actions/upload-artifact@v2
         with:
-          repo_token: ${{ secrets.workflow_token }}
-          file: ./release/*
-          tag: 自编译
-          file_glob: true
-          overwrite: true
-          release_name: ${{env.strDate}} 自编译
+          name: 自编译固件
+          path: ./release/
+          
+      #- name: Upload release asset
+        #uses: svenstaro/upload-release-action@v2
+        #with:
+          #repo_token: ${{ secrets.workflow_token }}
+          #file: ./release/*
+          #tag: 自编译
+          #file_glob: true
+          #overwrite: true
+          #release_name: ${{env.strDate}} 自编译
