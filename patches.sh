@@ -21,7 +21,7 @@ sed -i '/DEPENDS+/ s/$/ +wsdd2/' `find . -type f -path '*/ksmbd-tools/Makefile'`
     #echo -e "\toption governor0 'schedutil'" >> package/lean/luci-app-cpufreq/root/etc/config/cpufreq
     #echo -e "\toption minfreq0 '816000'" >> package/lean/luci-app-cpufreq/root/etc/config/cpufreq
     #echo -e "\toption maxfreq0 '1512000'\n" >> package/lean/luci-app-cpufreq/root/etc/config/cpufreq
-fi
+#fi
 
 if [ $DEVICE = 'r4s' ]; then
     wget https://github.com/immortalwrt/immortalwrt/commit/6c3f6d2686679173b95495c47d861db1f41729dd.patch
