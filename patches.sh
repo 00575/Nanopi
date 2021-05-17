@@ -6,7 +6,7 @@
 find . -type f -name nft-qos.config | xargs sed -i "s/option limit_enable '1'/option limit_enable '0'/"
 sed -i "/\/etc\/coremark\.sh/d" package/feeds/packages/coremark/coremark
 sed -i 's/192.168.1.1/192.168.2.1/' package/base-files/files/bin/config_generate
-#find /luci -type d -name index.htm | xargs sed -i '/Source Code\|ImmortalWrt Core/d'
+#find /feeds -type d -name index.htm | xargs sed -i '/Source Code\|ImmortalWrt Core/d'
 sed -i '/Source Code\|ImmortalWrt Core/d' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
 #sed -i 's/ImmortalWrt/Openwrt/' package/base-files/image-config.in
 sed -i 's/=1/=0/g' package/kernel/linux/files/sysctl-br-netfilter.conf
@@ -14,13 +14,13 @@ sed -i 's/=1/=0/g' package/kernel/linux/files/sysctl-br-netfilter.conf
 sed -i '/DEPENDS/ s/$/ +libcap-bin/' `find . -type f -path '*/luci-app-openclash/Makefile'`
 sed -i '/DEPENDS+/ s/$/ +wsdd2/' `find . -type f -path '*/ksmbd-tools/Makefile'`
 
-if [ $DEVICE = 'r2s' ]; then
-    sed -i "s/enable '0'/enable '1'/" `find feeds/ -type f -name oled | grep config`
-    sed -i 's/1400000/1450000/' target/linux/rockchip/patches-5.4/991-arm64-dts-rockchip-add-more-cpu-operating-points-for.patch
-    truncate -s-1 package/lean/luci-app-cpufreq/root/etc/config/cpufreq
-    echo -e "\toption governor0 'schedutil'" >> package/lean/luci-app-cpufreq/root/etc/config/cpufreq
-    echo -e "\toption minfreq0 '816000'" >> package/lean/luci-app-cpufreq/root/etc/config/cpufreq
-    echo -e "\toption maxfreq0 '1512000'\n" >> package/lean/luci-app-cpufreq/root/etc/config/cpufreq
+#if [ $DEVICE = 'r2s' ]; then
+    #sed -i "s/enable '0'/enable '1'/" `find feeds/ -type f -name oled | grep config`
+    #sed -i 's/1400000/1450000/' target/linux/rockchip/patches-5.4/991-arm64-dts-rockchip-add-more-cpu-operating-points-for.patch
+    #truncate -s-1 package/lean/luci-app-cpufreq/root/etc/config/cpufreq
+    #echo -e "\toption governor0 'schedutil'" >> package/lean/luci-app-cpufreq/root/etc/config/cpufreq
+    #echo -e "\toption minfreq0 '816000'" >> package/lean/luci-app-cpufreq/root/etc/config/cpufreq
+    #echo -e "\toption maxfreq0 '1512000'\n" >> package/lean/luci-app-cpufreq/root/etc/config/cpufreq
 fi
 
 if [ $DEVICE = 'r4s' ]; then
