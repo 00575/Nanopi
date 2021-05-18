@@ -7,10 +7,10 @@ find . -type f -name nft-qos.config | xargs sed -i "s/option limit_enable '1'/op
 sed -i "/\/etc\/coremark\.sh/d" package/feeds/packages/coremark/coremark
 sed -i 's/192.168.1.1/192.168.2.1/' package/base-files/files/bin/config_generate
 
-#sed -i '/Source Code\|ImmortalWrt Core/d' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
-find /package -type d -name index.htm | xargs sed -i '/Source Code\|ImmortalWrt Core/d'
+sed -i '/Source Code\|ImmortalWrt Core/d' package/feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
+#find ./feeds -type d -name index.htm | xargs sed -i '/Source Code\|ImmortalWrt Core/d'
 #sed -i '/Powered by\|ArgonTheme/d' package/feeds/luci/themes/luci-theme-argonv3/luasrc/view/themes/argon/footer.htm
-find /package -type d -name footer.htm | xargs sed -i '/Powered by\|ArgonTheme/d'
+find ./feeds -type d -name footer.htm | xargs sed -i '/Powered by\|ArgonTheme/d'
 sed -i 's/ImmortalWrt/Openwrt/' package/base-files/image-config.in
 
 sed -i 's/=1/=0/g' package/kernel/linux/files/sysctl-br-netfilter.conf
