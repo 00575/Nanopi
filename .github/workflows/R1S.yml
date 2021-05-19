@@ -190,7 +190,7 @@ jobs:
     needs: build_packages
     if: always()
     name: Generate r1s firmware
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       DEVICE: r1s
 
@@ -229,6 +229,7 @@ jobs:
           mv $(ls -1 ./bin/targets/*/*/*img.gz | head -1) $GITHUB_WORKSPACE/release/$DEVICE.img.gz
           cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE.img.gz > $DEVICE.img.gz.md5
           gzip -dc $DEVICE.img.gz | md5sum | sed "s/-/$DEVICE.img/" > $DEVICE.img.md5
+          rm -rf $DEVICE.img.gz.md5
           
       - name: Upload release asset
         uses: svenstaro/upload-release-action@v2
