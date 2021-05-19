@@ -6,12 +6,15 @@ sed -i "/dep.*INCLUDE_.*=n/d" package/feeds/luci/luci-app-turboacc/Makefile
 find . -type f -name nft-qos.config | xargs sed -i "s/option limit_enable '1'/option limit_enable '0'/"
 sed -i "/\/etc\/coremark\.sh/d" package/feeds/packages/coremark/coremark
 sed -i 's/192.168.1.1/192.168.2.1/' package/base-files/files/bin/config_generate
+sed -i 's/ImmortalWrt/00575/' package/base-files/image-config.in
 sed -i 's/=1/=0/g' package/kernel/linux/files/sysctl-br-netfilter.conf
 
-sed -i '/Source Code\|ImmortalWrt Core/d' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
-sed -i '/Powered by\|ArgonTheme/d' ./feeds/luci/themes/*/luasrc/view/themes/argon/footer.htm
+#sed -i '/github.com\|ImmortalWrt Core/d' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
+sed -i '/ImmortalWrt/{N;d;}' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
+#sed -i '/Powered by\|ArgonTheme/d' ./feeds/luci/themes/*/luasrc/view/themes/argon/footer.htm
+sed -i '/Powered by/,+12d' ./feeds/luci/themes/*/luasrc/view/themes/argon/footer.htm
 #sed -i '/Powered by\|ArgonTheme/d' find ./feeds/luci/themes -type f -name footer.htm
-sed -i 's/ImmortalWrt/Openwrt/' package/base-files/image-config.in
+#sed '/Powered by/c "This will be the new line" ' ./feeds/luci/themes/*/luasrc/view/themes/argon/footer.htm
 
 sed -i '/DEPENDS/ s/$/ +libcap-bin/' `find . -type f -path '*/luci-app-openclash/Makefile'`
 sed -i '/DEPENDS+/ s/$/ +wsdd2/' `find . -type f -path '*/ksmbd-tools/Makefile'`
