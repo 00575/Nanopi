@@ -13,6 +13,7 @@ sed -i 's/=1/=0/g' package/kernel/linux/files/sysctl-br-netfilter.conf
 sed -i '/ImmortalWrt/{N;d;}' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
 #sed -i '/Powered by\|ArgonTheme/d' ./feeds/luci/themes/*/luasrc/view/themes/argon/footer.htm
 sed -i '/Powered by/,+12d' ./feeds/luci/themes/*/luasrc/view/themes/argon/footer.htm
+sed '/^<div/a\<strong>Nanopi Build For Openwrt </strong><a href="https://github.com/00575/Nanopi"><strong>00575</strong></a>' ./feeds/luci/themes/*/luasrc/view/themes/argon/footer.htm
 #sed -i '/Powered by\|ArgonTheme/d' find ./feeds/luci/themes -type f -name footer.htm
 #sed '/Powered by/c "This will be the new line" ' ./feeds/luci/themes/*/luasrc/view/themes/argon/footer.htm
 
