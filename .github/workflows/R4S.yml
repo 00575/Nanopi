@@ -84,8 +84,7 @@ jobs:
         run: |
           cd ~/lede
           while true; do make download -j && break || true; done
-          #make -j$[`nproc`+1] IGNORE_ERRORS=1
-          make -j1 V=s
+          make -j$[`nproc`+1] IGNORE_ERRORS=1
           mv `ls ~/lede/bin/targets/*/*/*imagebuilder*xz` ~/ib-$DEVICE.tar.xz
           
           echo "======================="
