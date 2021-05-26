@@ -126,9 +126,9 @@ jobs:
           sudo umount lede
           sudo losetup -d $LOOP_DEVICE
           export AUTH="Authorization: token ${{ secrets.workflow_token }}"
-          export cache_path='github.com/repos/00575/Nanopi-R2S/releases'
-          export cache_repo_id='43518507'
-          ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/cache")
+          export cache_path='github.com/repos/a0575/file/releases'
+          export cache_repo_id='43572511'
+          ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/21.02")
           echo $ret | jq -r '.assets[] | select(.name | contains ("'$DEVICE'.img")).id' | \
           xargs -n1 -i curl -X DELETE -H "$AUTH" "https://api.$cache_path/assets/{}"
           echo $ret | jq -r '.assets[] | select(.name == "ib-'$DEVICE'.tar.xz").id' | \
@@ -158,7 +158,7 @@ jobs:
       - name: Generate firmware
         run: |
           sudo sysctl vm.swappiness=0
-          curl -L https://github.com/00575/nanopi-R2S/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
+          curl -L https://github.com/a0575/file/releases/download/21.02/ib-$DEVICE.tar.xz | tar -Jxvf -
           mv *imagebuilder* ib && cd ib
           . $GITHUB_WORKSPACE/merge_files.sh
           mkdir -p files/local_feed && sudo mount --bind packages files/local_feed
@@ -202,7 +202,7 @@ jobs:
       - name: Generate firmware
         run: |
           sudo sysctl vm.swappiness=0
-          curl -L https://github.com/00575/nanopi-R2S/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
+          curl -L https://github.com/a0575/file/releases/download/21.02/ib-$DEVICE.tar.xz | tar -Jxvf -
           mv *imagebuilder* ib && cd ib
           . $GITHUB_WORKSPACE/merge_files.sh
           sed -i '/local/d;s/#//' files/etc/opkg/distfeeds.conf
