@@ -119,15 +119,15 @@ jobs:
           release_name: test-${{env.strDate}}
    
       - name: Save cache state
-        if: env.TG
+        #if: env.TG
         run: |
           cd
           sleep 120
           sudo umount lede
           sudo losetup -d $LOOP_DEVICE
           export AUTH="Authorization: token ${{ secrets.workflow_token }}"
-          export cache_path='github.com/repos/00575/Nanopi/releases'
-          export cache_repo_id='41637325'
+          export cache_path='github.com/repos/00575/Nanopi-R2S/releases'
+          export cache_repo_id='43518507'
           ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/cache")
           echo $ret | jq -r '.assets[] | select(.name | contains ("'$DEVICE'.img")).id' | \
           xargs -n1 -i curl -X DELETE -H "$AUTH" "https://api.$cache_path/assets/{}"
