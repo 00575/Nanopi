@@ -40,9 +40,9 @@ sed -i '/tencent/d' scripts/download.pl
 
 sed -i 's/ImmortalWrt/#/' package/base-files/files/bin/config_generate
 #sed -i '/distname/d' package/emortal/autocore/files/*/index.htm
-sed -i '/distname/d' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
+#sed -i '/distname/d' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
 sed -i '/Source Code/,+2d' package/emortal/autocore/files/*/index.htm
-sed -i '/Source Code/,+2d' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
+#sed -i '/Source Code/,+2d' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
 sed -i '/Powered by/i\<strong>Nanopi Build For Openwrt </strong><a href="https://github.com/00575/Nanopi" target="_blank"><strong>00575</strong></a>' ./feeds/luci/themes/*/luasrc/view/themes/argon/footer.htm
 sed -i '/Powered by/,+12d' ./feeds/luci/themes/*/luasrc/view/themes/argon/footer.htm
 
