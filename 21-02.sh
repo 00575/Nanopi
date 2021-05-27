@@ -27,22 +27,10 @@ if [ $DEVICE = 'r4s' ]; then
     sed -i 's/r8169/r8168/' target/linux/rockchip/image/armv8.mk
 fi
 
-#if [[ $DEVICE =~ ('r2s'|'r4s'|'r1p') ]]; then
-    #wget https://github.com/coolsnowwolf/lede/raw/757e42d70727fe6b937bb31794a9ad4f5ce98081/target/linux/rockchip/config-default -NP target/linux/rockchip/
-    #wget https://github.com/coolsnowwolf/lede/commit/f341ef96fe4b509a728ba1281281da96bac23673.patch
-    #git apply f341ef96fe4b509a728ba1281281da96bac23673.patch
-    #rm f341ef96fe4b509a728ba1281281da96bac23673.patch
-#fi
-
 sed -i '/182.140.223.146/d' scripts/download.pl
 sed -i '/\.cn\//d' scripts/download.pl
 sed -i '/tencent/d' scripts/download.pl
 
-sed -i 's/ImmortalWrt/#/' package/base-files/files/bin/config_generate
-#sed -i '/distname/d' package/emortal/autocore/files/*/index.htm
-#sed -i '/distname/d' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
-sed -i '/Source Code/,+2d' package/emortal/autocore/files/*/index.htm
-#sed -i '/Source Code/,+2d' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
 sed -i '/Powered by/i\<strong>Nanopi Build For Openwrt </strong><a href="https://github.com/00575/Nanopi" target="_blank"><strong>00575</strong></a>' ./feeds/luci/themes/*/luasrc/view/themes/argon/footer.htm
 sed -i '/Powered by/,+12d' ./feeds/luci/themes/*/luasrc/view/themes/argon/footer.htm
 
