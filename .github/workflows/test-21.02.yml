@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       DEVICE: r2s
-      TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       DEPLOY_SSHKEY: ${{ secrets.SSH_KEY }}
     if: github.repository_owner=='00575'
 
@@ -51,39 +50,39 @@ jobs:
       - name: Update feeds and packages
         run: |
           cd ~/lede
-          if [ -d 'feeds' ]; then
-            pushd feeds/packages; git restore .; popd
-            pushd feeds/luci; git restore .; popd
-            pushd feeds/routing; git restore .; popd
-            pushd feeds/telephony; git restore .; popd
-          fi
+          #if [ -d 'feeds' ]; then
+            #pushd feeds/packages; git restore .; popd
+            #pushd feeds/luci; git restore .; popd
+            #pushd feeds/routing; git restore .; popd
+            #pushd feeds/telephony; git restore .; popd
+          #fi
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-          . $GITHUB_WORKSPACE/merge_packages.sh
+          #. $GITHUB_WORKSPACE/merge_packages.sh
           . $GITHUB_WORKSPACE/21-02.sh
-          cd
-          svn export https://github.com/openwrt/luci/branches/openwrt-21.02 luci
-          echo > more_luci.txt
-          pushd luci
-          ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/luci/{} | grep Only | grep lede | grep -E applications\|themes | awk '{print $4}' | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> ~/lede/more_luci.txt
-          popd
+          #cd
+          #svn export https://github.com/openwrt/luci/branches/openwrt-21.02 luci
+          #echo > more_luci.txt
+          #pushd luci
+          #ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/luci/{} | grep Only | grep lede | grep -E applications\|themes | awk '{print $4}' | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> ~/lede/more_luci.txt
+          #popd
           
-      - name: Custom configure file
-        run: |
-          cd ~/lede
+      #- name: Custom configure file
+#        run: |
+          #cd ~/lede
           #cat $GITHUB_WORKSPACE/$DEVICE.config.seed | sed 's/\(CONFIG_PACKAGE_luci-app-[^A-Z]*=\)y/\1m/' > .config
           #find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> .config
-          cat $GITHUB_WORKSPACE/extra_packages.seed >> .config
-          cat more_luci.txt >> .config
-          echo -e 'CONFIG_PACKAGE_iptables-mod-fullconenat=y\nCONFIG_PACKAGE_kmod-ipt-fullconenat=y\n' >> .config
-          make defconfig && cat .config
+          #cat $GITHUB_WORKSPACE/extra_packages.seed >> .config
+          #cat more_luci.txt >> .config
+          #echo -e 'CONFIG_PACKAGE_iptables-mod-fullconenat=y\nCONFIG_PACKAGE_kmod-ipt-fullconenat=y\n' >> .config
+          #make defconfig && cat .config
           
       - name: Build and deploy packages
         run: |
           cd ~/lede
           while true; do make download -j && break || true; done
           make -j$[`nproc`+1] IGNORE_ERRORS=1
-          mv `ls ~/lede/bin/targets/*/*/*imagebuilder*xz` ~/ib-$DEVICE.tar.xz
+          #mv `ls ~/lede/bin/targets/*/*/*imagebuilder*xz` ~/ib-$DEVICE.tar.xz
           
           echo "======================="
           echo "Space usage:"
@@ -132,13 +131,7 @@ jobs:
           xargs -n1 -i curl -X DELETE -H "$AUTH" "https://api.$cache_path/assets/{}"
           echo $ret | jq -r '.assets[] | select(.name == "ib-'$DEVICE'.tar.xz").id' | \
           xargs -n1 -i curl -X DELETE -H "$AUTH" "https://api.$cache_path/assets/{}"
-          #zstdmt -c --adapt --long lede.img | parallel --wc --block 1.99G --pipe \
-          #'curl -s --data-binary @- -H "$AUTH" -H "Content-Type: application/octet-stream" https://uploads.$cache_path/$cache_repo_id/assets?name=lede.'$DEVICE'.img.zst.0{#} > /dev/null'
           zstdmt -c --long lede.img | split --numeric=1 -b 2000m - lede.$DEVICE.img.zst.
-          #for f in *img.zst*
-          #do
-          #  while true; do curl --data-binary @$f -H "$AUTH" -H 'Content-Type: application/octet-stream' "https://uploads.$cache_path/$cache_repo_id/assets?name=$f" && break || true; done
-          #done
           ls *img.zst* ib-$DEVICE.tar.xz | parallel --wc 'while true; do curl -T {} -H "$AUTH" -H "Content-Type: application/octet-stream" "https://uploads.$cache_path/$cache_repo_id/assets?name={}" && break || true; done'
  
   generate_slim_firmware:
