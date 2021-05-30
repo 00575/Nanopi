@@ -59,7 +59,7 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           . $GITHUB_WORKSPACE/merge_packages.sh
-          . $GITHUB_WORKSPACE/patches 21-02.sh
+          . $GITHUB_WORKSPACE/patches_21-02.sh
           cd
           svn export https://github.com/openwrt/luci/branches/openwrt-21.02 luci
           echo > more_luci.txt
