@@ -1,0 +1,62 @@
+name: R2s-21.02
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+
+jobs:
+
+  build_packages:
+    name: Build r2s
+    runs-on: ubuntu-20.04
+    env:
+      DEVICE: r2s
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+
+      - name: Space cleanup
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo sysctl vm.swappiness=0
+          nohup sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk &
+          sudo -E apt update
+          nohup sudo -E apt -y --no-install-recommends install jq build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libreadline-dev libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint ccache curl wget vim nano python python3 python3-pip python-ply python3-ply haveged lrzsz device-tree-compiler scons antlr3 gperf intltool rsync swig &
+      
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          
+      - name: Generate firmware
+        run: |
+          sudo sysctl vm.swappiness=0
+          curl -L https://github.com/00575/file/releases/download/21.02/ib-$DEVICE.tar.xz | tar -Jxvf -
+          mv *imagebuilder* ib && cd ib
+          . $GITHUB_WORKSPACE/merge_21.02-files.sh
+          sed -i '/local/d;s/#//' files/etc/opkg/distfeeds.conf
+          sed -i 's/luci-app-[^ ]*//g' include/target.mk $(find target/ -name Makefile)
+          sed -i 's/$(OPKG) install $(BUILD_PACKAGES)/$(OPKG) install --force-overwrite $(BUILD_PACKAGES)/' Makefile
+          PACKAGES=$(cat $GITHUB_WORKSPACE/$DEVICE-21.02.config | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d' | grep -v luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs echo)
+          LUCI=$(echo `cat $GITHUB_WORKSPACE/$DEVICE-21.02.config | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d;/docker/d' | grep luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//'`)
+          LP=$(cd packages; echo $LUCI | sed 's/-app-/-i18n-/g;s/ /\n/g' | xargs -n1 -i sh -c 'ls {}-zh-cn* 2>/dev/null' | sed 's/zh-.*.ipk/zh-cn/' | xargs echo)
+          make image PACKAGES="$PACKAGES $LUCI $LP" FILES="files"
+          
+          mkdir -p $GITHUB_WORKSPACE/release
+          mv $(ls -1 ./bin/targets/*/*/*img.gz | head -1) $GITHUB_WORKSPACE/release/$DEVICE.img.gz
+          cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE.img.gz > $DEVICE.img.gz.md5
+          gzip -dc $DEVICE.img.gz | md5sum | sed "s/-/$DEVICE.img/" > $DEVICE.img.md5
+          rm -rf $DEVICE.img.gz.md5
+          echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
+          echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
+          
+      - name: Upload release asset
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.workflow_token }}
+          file: ./release/*
+          tag: ${{env.strDate}}
+          file_glob: true
+          overwrite: true
+          release_name: Test-21.02-${{env.strDate}}
+          
