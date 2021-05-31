@@ -112,10 +112,10 @@ jobs:
         with:
           repo_token: ${{ secrets.workflow_token }}
           file: ./artifact/*.zip
-          tag: ${{env.strDate}}
+          tag: 21-02 ${{env.strDate}}
           file_glob: true
           overwrite: true
-          release_name: test-${{env.strDate}}
+          release_name: 21.02-${{env.strDate}}
    
       - name: Save cache state
         run: |
@@ -172,7 +172,7 @@ jobs:
         with:
           repo_token: ${{ secrets.workflow_token }}
           file: ./release/*
-          tag: ${{env.strDate}}
+          tag: 21-02 ${{env.strDate}}
           file_glob: true
           overwrite: true
           release_name: 21.02-${{env.strDate}}
@@ -228,7 +228,7 @@ jobs:
         with:
           repo_token: ${{ secrets.workflow_token }}
           file: ./release/*
-          tag: ${{env.strDate}}
+          tag: 21-02 ${{env.strDate}}
           file_glob: true
           overwrite: true
           release_name: 21.02-${{env.strDate}}
