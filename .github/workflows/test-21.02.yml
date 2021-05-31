@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       DEVICE: r2s
-    if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
 
@@ -55,7 +54,7 @@ jobs:
         with:
           repo_token: ${{ secrets.workflow_token }}
           file: ./release/*
-          tag: ${{env.strDate}}
+          tag: 21.02-${{env.strDate}}
           file_glob: true
           overwrite: true
           release_name: Test-21.02-${{env.strDate}}
