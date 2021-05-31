@@ -1,4 +1,4 @@
-name: R2s-21.02
+name: test-21.02
 
 on:
   repository_dispatch:
