@@ -149,7 +149,7 @@ jobs:
     name: Generate r1s slim firmware
     runs-on: ubuntu-20.04
     env:
-      DEVICE: r1s 
+      DEVICE: r1s
 
     steps:
 
