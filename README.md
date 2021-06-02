@@ -1,4 +1,4 @@
-### Nanopi-immortalwrt固件发布地址：
+### Nanopi-immortalwrt 18.06固件发布地址：
 https://github.com/00575/Nanopi/releases
 
 (支持r1s r2s r4s r1p r1s-h3 x86 内含ipk压缩包)
