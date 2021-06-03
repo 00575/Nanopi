@@ -1,4 +1,4 @@
-name: r1s-h3
+name: Build-r1s-h3
 
 on:
   repository_dispatch:
