@@ -1,4 +1,4 @@
-name: r4s
+name: Build-r4s
 
 on:
   repository_dispatch:
