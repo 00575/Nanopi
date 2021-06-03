@@ -1,4 +1,4 @@
-name: r2s
+name: Build-r2s
 
 on:
   repository_dispatch:
