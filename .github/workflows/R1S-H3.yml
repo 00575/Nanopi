@@ -159,6 +159,7 @@ jobs:
 
       - name: Generate firmware
         run: |
+          sudo apt update && sudo apt install qemu-utils
           sudo sysctl vm.swappiness=0
           curl -L https://github.com/00575/file/releases/download/18.06/ib-$DEVICE.tar.xz | tar -Jxvf -
           mv *imagebuilder* ib && cd ib
@@ -203,6 +204,7 @@ jobs:
 
       - name: Generate firmware
         run: |
+          sudo apt update && sudo apt install qemu-utils
           sudo sysctl vm.swappiness=0
           curl -L https://github.com/00575/file/releases/download/18.06/ib-$DEVICE.tar.xz | tar -Jxvf -
           mv *imagebuilder* ib && cd ib
