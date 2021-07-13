@@ -36,7 +36,7 @@ jobs:
           curl -sL https://raw.githubusercontent.com/00575/Nanopi/zstd-bin/zstd | sudo tee /usr/bin/zstd > /dev/null
           for i in {1..10}
           do
-            curl -sL --fail https://github.com/00575/file/releases/download/18.06/lede.$DEVICE.img.zst.0$i || break
+            curl -sL --fail https://github.com/klever1988/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
           done | zstdmt -d -o lede.img || (truncate -s 24g lede.img && mkfs.btrfs -M lede.img)
           LOOP_DEVICE=$(losetup -f) && echo "LOOP_DEVICE=$LOOP_DEVICE" >> $GITHUB_ENV
           sudo losetup -P --direct-io $LOOP_DEVICE lede.img
@@ -49,7 +49,7 @@ jobs:
           else
           sudo chown $USER:$(id -gn) lede && git clone -b openwrt-18.06-k5.4 --single-branch https://github.com/immortalwrt/immortalwrt lede
           fi
-      
+
       - name: Update feeds and packages
         run: |
           cd ~/lede
@@ -69,7 +69,7 @@ jobs:
           pushd luci
           ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/luci/{} | grep Only | grep lede | grep -E applications\|themes | awk '{print $4}' | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> ~/lede/more_luci.txt
           popd
-      
+
       - name: Custom configure file
         run: |
           cd ~/lede
@@ -79,14 +79,13 @@ jobs:
           cat more_luci.txt >> .config
           echo -e 'CONFIG_PACKAGE_iptables-mod-fullconenat=y\nCONFIG_PACKAGE_kmod-ipt-fullconenat=y\n' >> .config
           make defconfig && cat .config
-      
+
       - name: Build and deploy packages
         run: |
           cd ~/lede
           while true; do make download -j && break || true; done
           make -j$[`nproc`+1] IGNORE_ERRORS=1
           mv `ls ~/lede/bin/targets/*/*/*imagebuilder*xz` ~/ib-$DEVICE.tar.xz
-          
           echo "======================="
           echo "Space usage:"
           echo "======================="
