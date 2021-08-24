@@ -113,6 +113,7 @@ jobs:
           path: ./artifact/buildinfo/
 
       - name: Save cache state
+        #if: env.TG
         run: |
           cd
           sleep 120
@@ -134,7 +135,7 @@ jobs:
           #  while true; do curl --data-binary @$f -H "$AUTH" -H 'Content-Type: application/octet-stream' "https://uploads.$cache_path/$cache_repo_id/assets?name=$f" && break || true; done
           #done
           ls *img.zst* ib-$DEVICE.tar.xz | parallel --wc 'while true; do curl -T {} -H "$AUTH" -H "Content-Type: application/octet-stream" "https://uploads.$cache_path/$cache_repo_id/assets?name={}" && break || true; done'
-      
+  
   generate_slim_firmware:
     needs: build_packages
     name: Generate r2c slim firmware
