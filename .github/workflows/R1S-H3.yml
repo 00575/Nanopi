@@ -1,7 +1,7 @@
 name: Build-r1s-h3
 
 on:
-  repository_dispatch:
+  #repository_dispatch:
   workflow_dispatch:
   
 jobs:
