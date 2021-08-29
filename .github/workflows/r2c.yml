@@ -1,7 +1,7 @@
 name: Build-r2c
 
 on:
-  repository_dispatch:
+  #repository_dispatch:
   workflow_dispatch:
   
 jobs:
