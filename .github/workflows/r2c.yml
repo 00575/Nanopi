@@ -25,7 +25,6 @@ jobs:
           nohup sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk &
           sudo -E apt update
           nohup sudo -E apt -y --no-install-recommends install pv jq build-essential cmake asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libreadline-dev libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint ccache curl wget vim nano python2.7 python3 python3-pip python-ply python3-ply haveged lrzsz device-tree-compiler scons antlr3 gperf intltool mkisofs rsync swig &
-      
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
@@ -41,11 +40,12 @@ jobs:
           LOOP_DEVICE=$(losetup -f) && echo "LOOP_DEVICE=$LOOP_DEVICE" >> $GITHUB_ENV
           sudo losetup -P --direct-io $LOOP_DEVICE lede.img
           mkdir lede && sudo mount -o nossd,compress=zstd $LOOP_DEVICE lede
+          [ $BRANCH != 'master' ] && BRANCH='openwrt-18.06-k5.4'
           if [ -d 'lede/.git' ]; then
           cd lede && rm -f zerospace && git config --local user.email "action@github.com" && git config --local user.name "GitHub Action"
-          git fetch && git reset --hard origin/openwrt-18.06-k5.4
+          git fetch && git reset --hard origin/$BRANCH
           else
-          sudo chown $USER:$(id -gn) lede && git clone -b openwrt-18.06-k5.4 --single-branch https://github.com/immortalwrt/immortalwrt lede
+          sudo chown $USER:$(id -gn) lede && git clone -b $BRANCH --single-branch https://github.com/immortalwrt/immortalwrt lede
           fi
       
       - name: Update feeds and packages
@@ -62,22 +62,20 @@ jobs:
           . $GITHUB_WORKSPACE/merge_packages.sh
           . $GITHUB_WORKSPACE/patches.sh
           cd
-          svn export https://github.com/openwrt/luci/branches/openwrt-18.06 luci
+          [ $BRANCH != 'master' ] && BRANCH='openwrt-18.06'
+          svn export https://github.com/openwrt/luci/branches/$BRANCH luci
           echo > more_luci.txt
           pushd luci
           ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/luci/{} | grep Only | grep lede | grep -E applications\|themes | awk '{print $4}' | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> ~/lede/more_luci.txt
           popd
-      
       - name: Custom configure file
         run: |
           cd ~/lede
-          cat $GITHUB_WORKSPACE/$DEVICE.config.seed | sed 's/\(CONFIG_PACKAGE_luci-app-[^A-Z]*=\)y/\1m/' > .config
+          cat $GITHUB_WORKSPACE/$DEVICE.config.seed $GITHUB_WORKSPACE/common.seed | sed 's/\(CONFIG_PACKAGE_luci-app-[^A-Z]*=\)y/\1m/' > .config
           find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> .config
           cat $GITHUB_WORKSPACE/extra_packages.seed >> .config
           cat more_luci.txt >> .config
-          echo -e 'CONFIG_PACKAGE_iptables-mod-fullconenat=y\nCONFIG_PACKAGE_kmod-ipt-fullconenat=y\n' >> .config
           make defconfig && cat .config
-          
       - name: Clean build cache
         if: ${{ github.event.client_payload.package_clean == 'true' }}
         run: |
@@ -108,7 +106,7 @@ jobs:
           df -h .
           make package/clean
           df -h .
-              
+          
       - name: Prepare artifact
         run: |
           cd
@@ -178,12 +176,14 @@ jobs:
           sed -i '/luci-lib-base/d;/luci-lib-ipkg/d' include/target.mk
           sed -i 's/luci-app-[^ ]*//g' include/target.mk $(find target/ -name Makefile)
           sed -i 's/$(OPKG) install $(BUILD_PACKAGES)/$(OPKG) install --force-overwrite $(BUILD_PACKAGES)/' Makefile
-          PACKAGES=$(cat $GITHUB_WORKSPACE/$DEVICE.config.seed | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d' | grep -v luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs echo)
+          PACKAGES=$(cd packages; cat $GITHUB_WORKSPACE/$DEVICE.config.seed $GITHUB_WORKSPACE/common.seed | grep CONFIG_PACKAGE | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs -n1 -i sh -c 'ls {}* 2>/dev/null' | grep -v luci-app | sed 's/\([^_]*\)_.*ipk/\1/g' | xargs echo)
           make image PACKAGES="$PACKAGES $LUCI $LP luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn" FILES="files"
+          
           mkdir -p $GITHUB_WORKSPACE/release
           mv $(ls -1 ./bin/targets/*/*/*img.gz | head -1) $GITHUB_WORKSPACE/release/$DEVICE-slim.img.gz
           cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE-slim.img.gz > $DEVICE-slim.img.gz.md5
           gzip -dc $DEVICE-slim.img.gz | md5sum | sed "s/-/$DEVICE-slim.img/" > $DEVICE-slim.img.md5
+          rm -rf $DEVICE-slim.img.gz.md5
           echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
           echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
       
@@ -221,8 +221,8 @@ jobs:
           sed -i '/luci-lib-base/d;/luci-lib-ipkg/d' include/target.mk
           sed -i 's/luci-app-[^ ]*//g' include/target.mk $(find target/ -name Makefile)
           sed -i 's/$(OPKG) install $(BUILD_PACKAGES)/$(OPKG) install --force-overwrite $(BUILD_PACKAGES)/' Makefile
-          PACKAGES=$(cat $GITHUB_WORKSPACE/$DEVICE.config.seed | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d' | grep -v luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs echo)
-          LUCI=$(echo `cat $GITHUB_WORKSPACE/$DEVICE.config.seed | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d;/docker/d' | grep luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//'`)
+          PACKAGES=$(cd packages; cat $GITHUB_WORKSPACE/$DEVICE.config.seed $GITHUB_WORKSPACE/common.seed | grep CONFIG_PACKAGE | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs -n1 -i sh -c 'ls {}_* 2>/dev/null' | grep -v luci-app | sed 's/\([^_]*\)_.*ipk/\1/g' | xargs echo)
+          LUCI=$(cd packages; cat $GITHUB_WORKSPACE/$DEVICE.config.seed $GITHUB_WORKSPACE/common.seed | grep luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs -n1 -i sh -c 'ls {}_* 2>/dev/null' | grep -v docker | sed 's/\([^_]*\)_.*ipk/\1/g' | xargs echo)
           LP=$(cd packages; echo $LUCI | sed 's/-app-/-i18n-/g;s/ /\n/g' | xargs -n1 -i sh -c 'ls {}-zh-cn* 2>/dev/null' | sed 's/zh-.*.ipk/zh-cn/' | xargs echo)
           make image PACKAGES="$PACKAGES $LUCI $LP luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn" FILES="files"
           
@@ -234,9 +234,12 @@ jobs:
           echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
           echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
           
+          if [ $DEVICE =*"r1s"* ]; then
+            exit 0
+          fi
           cd $GITHUB_WORKSPACE/ib
           rm -rf bin/
-          LUCI=$(echo `cat $GITHUB_WORKSPACE/$DEVICE.config.seed | grep CONFIG_PACKAGE | sed '/dnsmasq_full_dhcpv6/d;/INCLUDE/d' | grep luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//'`)
+          LUCI=$(cd packages; cat $GITHUB_WORKSPACE/$DEVICE.config.seed $GITHUB_WORKSPACE/common.seed | grep luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs -n1 -i sh -c 'ls {}_* 2>/dev/null' | sed 's/\([^_]*\)_.*ipk/\1/g' | xargs echo)
           LP=$(cd packages; echo $LUCI | sed 's/-app-/-i18n-/g;s/ /\n/g' | xargs -n1 -i sh -c 'ls {}-zh-cn* 2>/dev/null' | sed 's/zh-.*.ipk/zh-cn/' | xargs echo)
           make image PACKAGES="$PACKAGES $LUCI $LP luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn" FILES="files"
           mv $(ls -1 ./bin/targets/*/*/*img.gz | head -1) $GITHUB_WORKSPACE/release/$DEVICE-with-docker.img.gz
