@@ -207,13 +207,13 @@ jobs:
 
   generate_firmware:
    needs: build_packages
-    if: always()
-    name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware
-    runs-on: ubuntu-20.04
-    env:
+   if: always()
+   name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware
+   runs-on: ubuntu-20.04
+   env:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
 
-    steps:
+   steps:
 
       - uses: actions/checkout@v2
         with:
