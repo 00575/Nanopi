@@ -1,4 +1,4 @@
-name: Build-R2C
+name: Build-r2c
 
 on:
   #repository_dispatch:
