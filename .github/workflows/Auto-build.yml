@@ -74,6 +74,15 @@ jobs:
           pushd luci
           ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/luci/{} | grep Only | grep lede | grep -E applications\|themes | awk '{print $4}' | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> ~/lede/more_luci.txt
           popd
+  
+      - name: Custom configure file
+        run: |
+          cd ~/lede
+          cat $GITHUB_WORKSPACE/$DEVICE.config.seed $GITHUB_WORKSPACE/common.seed | sed 's/\(CONFIG_PACKAGE_luci-app-[^A-Z]*=\)y/\1m/' > .config
+          find package/ -type d -name luci-app-* | rev | cut -d'/' -f1 | rev | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> .config
+          cat $GITHUB_WORKSPACE/extra_packages.seed >> .config
+          cat more_luci.txt >> .config
+          make defconfig && cat .config
           
       - name: Custom configure file
         run: |
