@@ -1,7 +1,7 @@
 name: Build-x86
 
 on:
-  repository_dispatch:
+  #repository_dispatch:
   workflow_dispatch:
   
 jobs:
