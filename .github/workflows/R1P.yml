@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       DEVICE: r1p
+      BRANCH: ${{ github.event.client_payload.branch }}
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       DEPLOY_SSHKEY: ${{ secrets.SSH_KEY }}
     if: github.repository_owner=='00575'
