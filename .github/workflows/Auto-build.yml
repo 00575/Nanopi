@@ -20,7 +20,7 @@ jobs:
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
     if: github.repository_owner=='00575'
     
-  steps:
+    steps:
 
       - name: Space cleanup
         env:
