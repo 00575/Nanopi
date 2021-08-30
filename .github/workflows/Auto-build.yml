@@ -107,6 +107,7 @@ jobs:
           while true; do make download -j && break || true; done
           make -j$[`nproc`+1] IGNORE_ERRORS=1
           mv `ls ~/lede/bin/targets/*/*/*imagebuilder*xz` ~/ib-$DEVICE.tar.xz
+          
           echo "======================="
           echo "Space usage:"
           echo "======================="
@@ -149,7 +150,8 @@ jobs:
           cd
           sleep 60
           sudo mount -o remount,compress=no,nodatacow,nodatasum lede
-          cd lede/; pv /dev/zero > zerospace || true; cd -
+          cd lede/; pv /dev/zero > zerospace || true; sync; rm -f zerospace; cd -
+          sleep 60
           sudo umount lede
           sudo losetup -d $LOOP_DEVICE
           export AUTH="Authorization: token ${{ secrets.workflow_token }}"
