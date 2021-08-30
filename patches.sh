@@ -74,7 +74,7 @@ sed -i '/uci commit luci/i\uci set luci.main.mediaurlbase="/luci-static/argon"' 
 sed -i '/182.140.223.146/d;/\.cn\//d;/tencent/d' scripts/download.pl
 
 sed -i 's/ImmortalWrt/Nanopi/' package/base-files/files/bin/config_generate
-sed -i '/distname/d' package/emortal/autocore/files/*/index.htm
+#sed -i '/distname/d' package/emortal/autocore/files/*/index.htm
 sed -i '/distname/d' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
 sed -i '/Source Code/,+2d' package/emortal/autocore/files/*/index.htm
 sed -i '/Source Code/,+2d' ./feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
