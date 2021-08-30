@@ -147,7 +147,7 @@ jobs:
         #if: env.TG
         run: |
           cd
-          sleep 120
+          sleep 60
           sudo mount -o remount,compress=no,nodatacow,nodatasum lede
           cd lede/; pv /dev/zero > zerospace || true; cd -
           sudo umount lede
