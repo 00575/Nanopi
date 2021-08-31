@@ -158,7 +158,7 @@ jobs:
           export AUTH="Authorization: token ${{ secrets.workflow_token }}"
           export cache_path='github.com/repos/00575/file/releases'
           export cache_repo_id='43574597'
-          ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/18.06")
+          ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/cache")
           echo $ret | jq -r '.assets[] | select(.name | contains ("'$DEVICE'.img")).id' | \
           xargs -n1 -i curl -X DELETE -H "$AUTH" "https://api.$cache_path/assets/{}"
           echo $ret | jq -r '.assets[] | select(.name == "ib-'$DEVICE'.tar.xz").id' | \
