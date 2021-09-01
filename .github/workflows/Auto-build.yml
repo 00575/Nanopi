@@ -255,7 +255,7 @@ jobs:
           echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
           echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
           
-          if [ $DEVICE =*"r1s"* ]; then
+          if [[ ${{ github.event.client_payload.device || github.event.inputs.device }} == *"r1s"* ]]; then
             exit 0
           fi
           cd $GITHUB_WORKSPACE/ib
