@@ -1,4 +1,4 @@
-name: 自编译模板
+name: DIY
 
 on:
   #repository_dispatch:
@@ -37,7 +37,7 @@ jobs:
         run: |
           sudo apt update && sudo apt install qemu-utils
           sudo sysctl vm.swappiness=0
-          curl -L https://github.com/00575/file/releases/download/18.06/ib-$DEVICE.tar.xz | tar -Jxvf -
+          curl -L https://github.com/00575/file/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
           mv *imagebuilder* ib && cd ib
           . $GITHUB_WORKSPACE/merge_files.sh
           sed -i '/local/d;s/#//' files/etc/opkg/distfeeds.conf
