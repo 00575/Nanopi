@@ -18,7 +18,7 @@ slim版固件只有OpenWrt本体，但内置了“本地软件源”，包含大
 
 编辑[ r2s.config.seed ]文件，直接删除不需要的luci app软件包配置行， 添加自己所需的软件配置
 
-完成之后进入[ Actions ]，点击左侧[ 自编译模板 ]，
+完成之后进入[ Actions ]，点击左侧[ DIY ]，
 
 点击右侧[ Run workflow ]
 
