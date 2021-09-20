@@ -24,15 +24,15 @@ fi
 mount -t tmpfs -o remount,size=850m tmpfs /tmp
 rm -rf /tmp/upg && mkdir /tmp/upg && cd /tmp/upg
 set +e
-wget https://ghproxy.com/https://github.com/00575/nanopi/releases/download/r2s-18.06-$(date +%Y-%m-%d)/$board_id$ver.img.gz -O- | gzip -dc > $board_id.img
+wget https://ghproxy.com/https://github.com/00575/nanopi/releases/download/Test-$(date +%Y-%m-%d)/$board_id$ver.img.gz -O- | gzip -dc > $board_id.img
 if [ $? -eq 0 ]; then
-	wget https://ghproxy.com/https://github.com/00575/nanopi/releases/download/r2s-18.06-$(date +%Y-%m-%d)/$board_id$ver.img.md5 -O md5sum.txt
+	wget https://ghproxy.com/https://github.com/00575/nanopi/releases/download/Test-$(date +%Y-%m-%d)/$board_id$ver.img.md5 -O md5sum.txt
 	echo -e '\e[92m今天固件已下载，准备解压\e[0m'
 else
 	echo -e '\e[91m今天的固件还没更新，尝试下载昨天的固件\e[0m'
-	wget https://ghproxy.com/https://github.com/00575/nanopi/releases/download/r2s-18.06-$(date -d "@$(( $(busybox date +%s) - 86400))" +%Y-%m-%d)/$board_id$ver.img.gz -O- | gzip -dc > $board_id.img
+	wget https://ghproxy.com/https://github.com/00575/nanopi/releases/download/Test-$(date -d "@$(( $(busybox date +%s) - 86400))" +%Y-%m-%d)/$board_id$ver.img.gz -O- | gzip -dc > $board_id.img
 	if [ $? -eq 0 ]; then
-		wget https://ghproxy.com/https://github.com/00575/nanopi/releases/download/r2s-18.06-$(date -d "@$(( $(busybox date +%s) - 86400))" +%Y-%m-%d)/$board_id$ver.img.md5 -O md5sum.txt
+		wget https://ghproxy.com/https://github.com/00575/nanopi/releases/download/Test-$(date -d "@$(( $(busybox date +%s) - 86400))" +%Y-%m-%d)/$board_id$ver.img.md5 -O md5sum.txt
 		echo -e '\e[92m昨天的固件已下载，准备解压\e[0m'
 	else
 		echo -e '\e[91m没找到最新的固件，脚本退出\e[0m'
