@@ -1,3 +1,4 @@
+
 name: build
 
 on:
@@ -8,6 +9,10 @@ on:
         description: 'select device to build'
         default: 'r2s'
         required: false
+      branch:
+        description: 'seleclt openwrt branch'
+        default: 'master'
+        required: false
 
 jobs:
 
@@ -16,7 +21,7 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
-      BRANCH: ${{ github.event.client_payload.branch }}
+      BRANCH: ${{ github.event.client_payload.branch || github.event.inputs.branch }}
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
     if: github.repository_owner=='00575'
     
@@ -55,7 +60,7 @@ jobs:
           else
           sudo chown $USER:$(id -gn) lede && git clone -b $BRANCH --single-branch https://github.com/immortalwrt/immortalwrt lede
           fi
-      
+
       - name: Update feeds and packages
         run: |
           cd ~/lede
@@ -67,8 +72,8 @@ jobs:
           fi
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-          . $GITHUB_WORKSPACE/merge_packages.sh
-          . $GITHUB_WORKSPACE/patches.sh
+          . $GITHUB_WORKSPACE/scripts/merge_packages.sh
+          . $GITHUB_WORKSPACE/scripts/patches.sh
           cd
           [ $BRANCH != 'master' ] && BRANCH='openwrt-18.06'
           svn export https://github.com/openwrt/luci/branches/$BRANCH luci
@@ -76,7 +81,7 @@ jobs:
           pushd luci
           ls -d */ | xargs -n1 -i diff -q {} ../lede/feeds/luci/{} | grep Only | grep lede | grep -E applications\|themes | awk '{print $4}' | xargs -n1 -i echo CONFIG_PACKAGE_{}=m >> ~/lede/more_luci.txt
           popd
-  
+
       - name: Custom configure file
         run: |
           cd ~/lede
@@ -85,9 +90,9 @@ jobs:
           cat $GITHUB_WORKSPACE/extra_packages.seed >> .config
           cat more_luci.txt >> .config
           make defconfig && cat .config
-          
+
       - name: Clean build cache
-        if: ${{ github.event.client_payload.package_clean == 'true' }}
+        if: ${{ github.event.client_payload.package_clean == 'true' || github.event.inputs.device != '' }}
         run: |
           cd ~/lede
           df -h .
@@ -108,7 +113,7 @@ jobs:
           du -h --max-depth=1 ./ --exclude=build_dir --exclude=bin
           du -h --max-depth=1 ./build_dir
           du -h --max-depth=1 ./bin
-       
+
       - name: Clean build cache
         if: ${{ github.event.client_payload.package_clean == 'true' }}
         run: |
@@ -116,7 +121,7 @@ jobs:
           df -h .
           make package/clean
           df -h .
-          
+
       - name: Prepare artifact
         run: |
           cd
@@ -129,7 +134,7 @@ jobs:
           rm -rf bin tmp
           cd ..
           mv artifact $GITHUB_WORKSPACE
-      
+
       - name: Deliver buildinfo
         uses: actions/upload-artifact@v2
         with:
