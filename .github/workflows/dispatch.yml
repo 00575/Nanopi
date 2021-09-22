@@ -1,6 +1,5 @@
 name: Repo Dispatcher
 on:
-  repository_dispatch:
   workflow_dispatch:
     inputs:
       package_clean:
