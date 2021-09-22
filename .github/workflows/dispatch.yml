@@ -1,10 +1,11 @@
 name: Repo Dispatcher
 on:
+  repository_dispatch:
   workflow_dispatch:
     inputs:
       package_clean:
         description: 'check to make clean package'
-        default: 'true'
+        default: 'false'
         required: true
 
 jobs:
