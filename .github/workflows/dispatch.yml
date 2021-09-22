@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       package_clean:
-        #description: 'check to make clean package'
+        description: 'check to make clean package'
         default: true
         required: true
 
