@@ -8,6 +8,10 @@ on:
         description: 'check to make clean package'
         default: 'false'
         required: true
+      branch:
+        description: 'seleclt openwrt branch'
+        default: 'master'
+        required: false
 
 jobs:
   build:
