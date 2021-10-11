@@ -1,0 +1,53 @@
+name: Update
+
+on: 
+  #repository_dispatch:
+  workflow_dispatch:
+  #schedule:
+    #- cron: 00 00 * * *
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    
+    steps:
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+        
+      - name: 设置帐户
+        run: git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
+
+      - name: 复制
+        run: |
+          svn export https://github.com/QiuSimons/YAOF/trunk/PATCH new1
+          svn export https://github.com/QiuSimons/YAOF/trunk/SCRIPTS new2
+          svn export https://github.com/QiuSimons/YAOF/trunk/SEED new3
+        
+      - name: 整理
+        run: | 
+          cp -r new1/. PATCH/
+          cp -r new2/. SCRIPTS/
+          cp -r new3/. SEED/
+          rm -rf new1
+          rm -rf new2
+          rm -rf new3
+          
+      - name: 修改
+        run: |
+          cd SCRIPTS
+          sed -i '22a sed -i 's/192.168.1.1/192.168.2.1/' package/base-files/files/bin/config_generate' 02_prepare_package.sh
+          cat 02_prepare_package.sh
+         
+      - name: 添加文件到暂存区
+        run: git add .
+             
+      #- name: 暂存区全部文件替换工作区
+        #run: git checkout .
+
+      - name: 提交
+        run: git commit -am 'Update'
+
+      - name: 更新
+        run: git push
