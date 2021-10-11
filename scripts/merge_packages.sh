@@ -24,6 +24,7 @@ function merge_feed(){
 
 merge_feed nas "https://github.com/linkease/nas-packages;master"
 merge_feed nas_luci "https://github.com/linkease/nas-packages-luci;main"
+merge_feed mosdns "https://github.com/klever1988/openwrt-mos;master"
 merge_package https://github.com/project-lede/luci-app-godproxy
 merge_package https://github.com/Beginner-Go/luci-app-tencentddns
 merge_package https://github.com/sundaqiang/openwrt-packages/trunk/luci-app-services-wolplus
@@ -31,3 +32,6 @@ merge_package https://github.com/coolsnowwolf/lede/trunk/package/lean/ntfs3-moun
 merge_package https://github.com/coolsnowwolf/lede/trunk/package/lean/ntfs3
 merge_package https://github.com/coolsnowwolf/lede/trunk/package/lean/uugamebooster
 merge_package https://github.com/coolsnowwolf/lede/trunk/package/lean/luci-app-uugamebooster
+merge_package https://github.com/kuoruan/luci-app-frpc
+merge_package https://github.com/small-5/luci-app-adblock-plus
+merge_package https://github.com/zxlhhyccc/luci-app-v2raya
