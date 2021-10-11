@@ -1,6 +1,6 @@
 function merge_package(){
     pn=`echo $1 | rev | cut -d'/' -f 1 | rev`
-    find package/ feeds/ \( -type l -o -type d \) -name $pn | xargs -r rm -r
+    find package/ feeds/ \( -type l -o -type d \) -name $pn -not -path "package/custom/*" | xargs -r rm -r
     if [ ! -z "$2" ]; then
         find package/ feeds/ \( -type l -o -type d \) -name $2 | xargs -r rm -r
     fi
@@ -11,7 +11,7 @@ function merge_package(){
         git clone $3 --depth=1 $1
         rm -rf $pn/.git
     fi
-    mv $pn package/
+    mv $pn package/custom/
 }
 function merge_feed(){
     if [ ! -d "feed/$1" ]; then
@@ -22,9 +22,11 @@ function merge_feed(){
     ./scripts/feeds install -a -p $1
 }
 
+mkdir -p package/custom
 merge_feed nas "https://github.com/linkease/nas-packages;master"
 merge_feed nas_luci "https://github.com/linkease/nas-packages-luci;main"
-merge_feed mosdns "https://github.com/klever1988/openwrt-mos;master"
+merge_package https://github.com/klever1988/openwrt-mos/trunk/luci-app-mosdns
+merge_package https://github.com/klever1988/openwrt-mos/trunk/mosdns
 merge_package https://github.com/project-lede/luci-app-godproxy
 merge_package https://github.com/Beginner-Go/luci-app-tencentddns
 merge_package https://github.com/sundaqiang/openwrt-packages/trunk/luci-app-services-wolplus
