@@ -21,7 +21,7 @@ jobs:
 
       - name: 复制
         run: |
-          svn export https://github.com/klever1988/nanopi-openwrt/trunk/*.seed new
+          svn export https://github.com/klever1988/nanopi-openwrt/trunk/ new
         
       - name: 整理
         run: | 
