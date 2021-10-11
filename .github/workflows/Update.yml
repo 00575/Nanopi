@@ -25,7 +25,7 @@ jobs:
         
       - name: 整理
         run: | 
-          cp -r new/*.seed ./
+          cp -f new/*.seed ./
           #mv new/*.seed ./
           rm -rf new
          
