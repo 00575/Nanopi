@@ -25,14 +25,8 @@ jobs:
         
       - name: 整理
         run: | 
-          cp -r new/*.seed /
+          cp -r new/*.seed 
           rm -rf new
-         
-      - name: 修改
-        run: |
-          cd SCRIPTS
-          sed -i '22a sed -i 's/192.168.1.1/192.168.2.1/' package/base-files/files/bin/config_generate' 02_prepare_package.sh
-          cat 02_prepare_package.sh
          
       - name: 添加文件到暂存区
         run: git add .
