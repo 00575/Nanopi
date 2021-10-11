@@ -26,7 +26,7 @@ jobs:
       - name: 整理
         run: | 
           #cp -r new/*.seed ~/
-          mv new/*.seed ~/
+          mv new/*.seed ./
           rm -rf new
          
       - name: 添加文件到暂存区
