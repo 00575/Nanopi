@@ -21,12 +21,12 @@ jobs:
 
       - name: 复制
         run: |
-          svn export https://github.com/klever1988/nanopi-openwrt/trunk/ new
+          svn export https://github.com/klever1988/nanopi-openwrt/trunk/*.seed new
         
       - name: 整理
         run: | 
-          cp -f new/*.seed ./
-          #mv new/*.seed ./
+          #cp -f new/*.seed ./
+          mv new/*.seed ./
           rm -rf new
          
       - name: 添加文件到暂存区
