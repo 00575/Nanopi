@@ -21,19 +21,13 @@ jobs:
 
       - name: 复制
         run: |
-          svn export https://github.com/QiuSimons/YAOF/trunk/PATCH new1
-          svn export https://github.com/QiuSimons/YAOF/trunk/SCRIPTS new2
-          svn export https://github.com/QiuSimons/YAOF/trunk/SEED new3
+          svn export https://github.com/klever1988/nanopi-openwrt/trunk/ new
         
       - name: 整理
         run: | 
-          cp -r new1/. PATCH/
-          cp -r new2/. SCRIPTS/
-          cp -r new3/. SEED/
-          rm -rf new1
-          rm -rf new2
-          rm -rf new3
-          
+          cp -r new/*.seed /
+          rm -rf new
+         
       - name: 修改
         run: |
           cd SCRIPTS
