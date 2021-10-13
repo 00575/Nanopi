@@ -36,7 +36,7 @@ jobs:
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk
           sudo sysctl vm.swappiness=0
           ' &
-
+      
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
@@ -104,6 +104,7 @@ jobs:
           while true; do make download -j && break || true; done
           make -j$[`nproc`+1] IGNORE_ERRORS=1
           mv `ls ~/lede/bin/targets/*/*/*imagebuilder*xz` ~/ib-$DEVICE.tar.xz
+          
           echo "======================="
           echo "Space usage:"
           echo "======================="
@@ -192,7 +193,7 @@ jobs:
           sed -i 's/$(OPKG) install $(BUILD_PACKAGES)/$(OPKG) install --force-overwrite $(BUILD_PACKAGES)/' Makefile
           ls packages/*.ipk | xargs -n1 basename > package.files
           PACKAGES=$(cat $GITHUB_WORKSPACE/$DEVICE.config.seed $GITHUB_WORKSPACE/common.seed | grep CONFIG_PACKAGE | grep -v CONFIG_PACKAGE_luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs -n1 -i grep -o {} package.files | sort -u | xargs echo)
-          [ $BRANCH == 'master' ] && PACKAGES="$PACKAGES luci-i18n-opkg-zh-cn"
+          PACKAGES="$PACKAGES `grep -o luci-i18n-opkg-zh-cn package.files`"
           make image PACKAGES="$PACKAGES $LUCI $LP luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn" FILES="files"
 
           mkdir -p $GITHUB_WORKSPACE/release
@@ -214,14 +215,14 @@ jobs:
           release_name: ${{env.strDate}} 自动发布
 
   generate_firmware:
-   needs: build_packages
-   if: always()
-   name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware
-   runs-on: ubuntu-18.04
-   env:
+    needs: build_packages
+    if: always()
+    name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware
+    runs-on: ubuntu-18.04
+    env:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
 
-   steps:
+    steps:
 
       - uses: actions/checkout@v2
         with:
@@ -232,13 +233,14 @@ jobs:
           sudo apt update && sudo apt install qemu-utils
           sudo sysctl vm.swappiness=0
           curl -L https://github.com/00575/file/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
-          mv *imagebuilder* ib && cd ib
+           mv *imagebuilder* ib && cd ib
           . $GITHUB_WORKSPACE/scripts/merge_files.sh
           sed -i '/local/d;s/#//' files/etc/opkg/distfeeds.conf
           sed -i 's/luci-app-[^ ]*//g' include/target.mk $(find target/ -name Makefile)
           sed -i 's/$(OPKG) install $(BUILD_PACKAGES)/$(OPKG) install --force-overwrite $(BUILD_PACKAGES)/' Makefile
           ls packages/*.ipk | xargs -n1 basename > package.files
           PACKAGES=$(cat $GITHUB_WORKSPACE/$DEVICE.config.seed $GITHUB_WORKSPACE/common.seed | grep CONFIG_PACKAGE | grep -v CONFIG_PACKAGE_luci-app | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs -n1 -i grep -o {} package.files | sort -u | xargs echo)
+          PACKAGES="$PACKAGES `grep -o luci-i18n-opkg-zh-cn package.files`"
           LUCI=$(cat $GITHUB_WORKSPACE/$DEVICE.config.seed $GITHUB_WORKSPACE/common.seed | grep CONFIG_PACKAGE_luci-app | grep -v docker | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs -n1 -i grep -o {} package.files | sort -u | xargs echo)
           LP=$(echo $LUCI | sed 's/-app-/-i18n-/g;s/ /\n/g' | xargs -n1 -i grep -o {}-zh-cn package.files | xargs echo)
           make image PACKAGES="$PACKAGES $LUCI $LP luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn" FILES="files"
