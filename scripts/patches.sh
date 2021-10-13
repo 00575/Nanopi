@@ -12,6 +12,7 @@ sed -i 's/=1/=0/g' package/kernel/linux/files/sysctl-br-netfilter.conf
 
 sed -i '/DEPENDS/ s/$/ +libcap-bin/' `find package/ -follow -type f -path '*/luci-app-openclash/Makefile'`
 sed -i '/DEPENDS+/ s/$/ +wsdd2/' `find package/ -follow -type f -path '*/ksmbd-tools/Makefile'`
+sed -i '/DEPENDS/ s/$/ +frpc/' `find package/ -follow -type f -path '*/luci-app-frpc/Makefile'`
 
 sed -i 's/ +ntfs-3g/ +ntfs3-mount/' `find package/ -follow -type f -path '*/automount/Makefile'`
 sed -i '/skip\=/ a skip=`mount | grep -q /dev/$device; echo $?`' `find package/ -follow -type f -path */automount/files/15-automount`
@@ -29,6 +30,9 @@ mkdir -p `find package/ -follow -type d -path '*/pdnsd-alt'`/patches
 mv $GITHUB_WORKSPACE/patches/99-disallow-aaaa.patch `find package/ -follow -type d -path '*/pdnsd-alt'`/patches
 
 if [ $BRANCH == 'master' ]; then
+
+  sed -i 's/5.10/5.4/' target/linux/rockchip/Makefile
+  git revert --no-commit -X theirs 91eed5d9fb74e6c740291362ba12e11a2222a9fd
 
   # fix po path for snapshot
   find package/ -follow -type d -path '*/po/zh-cn' | xargs dirname | xargs -n1 -i sh -c "rm -f {}/zh_Hans; ln -sf zh-cn {}/zh_Hans"
@@ -55,6 +59,9 @@ if [ $BRANCH == 'master' ]; then
   wget https://github.com/coolsnowwolf/lede/commit/f341ef96fe4b509a728ba1281281da96bac23673.patch
   git apply f341ef96fe4b509a728ba1281281da96bac23673.patch
   rm f341ef96fe4b509a728ba1281281da96bac23673.patch
+
+  #this is a ugly fix
+  echo 'CONFIG_PACKAGE_procd-seccomp=y' >> $GITHUB_WORKSPACE/common.seed
 
   # bring the ethinfo back
   cd package/emortal/autocore/files/x86
