@@ -1,17 +1,20 @@
 function merge_package(){
     pn=`echo $1 | rev | cut -d'/' -f 1 | rev`
-    find package/ feeds/ \( -type l -o -type d \) -name $pn -not -path "package/custom/*" | xargs -r rm -r
+    find package/ -follow -name $pn -not -path "package/custom/*" | xargs -rt rm -r
     if [ ! -z "$2" ]; then
-        find package/ feeds/ \( -type l -o -type d \) -name $2 | xargs -r rm -r
+        find package/ -follow -name $2 -not -path "package/custom/*" | xargs -rt rm -r
     fi
 
-    if [[ $1 == *'/trunk/'* ]]; then
+    if [[ $1 == *'/trunk/'* || $1 == *'/branches/'* ]]; then
         svn export $1
     else
-        git clone $3 --depth=1 $1
+        git clone --depth=1 --single-branch $3 $1
         rm -rf $pn/.git
     fi
     mv $pn package/custom/
+}
+function drop_package(){
+    find package/ -follow -name $pn -not -path "package/custom/*" | xargs -rt rm -r
 }
 function merge_feed(){
     if [ ! -d "feed/$1" ]; then
@@ -22,11 +25,12 @@ function merge_feed(){
     ./scripts/feeds install -a -p $1
 }
 
-mkdir -p package/custom
+rm -rf package/custom; mkdir package/custom
 merge_feed nas "https://github.com/linkease/nas-packages;master"
 merge_feed nas_luci "https://github.com/linkease/nas-packages-luci;main"
-merge_package https://github.com/klever1988/openwrt-mos/trunk/luci-app-mosdns
-merge_package https://github.com/klever1988/openwrt-mos/trunk/mosdns
+merge_package https://github.com/klever1988/helloworld/branches/tmp/luci-app-ssr-plus
+merge_package https://github.com/klever1988/helloworld/branches/tmp/mosdns
+#merge_package https://github.com/klever1988/openwrt-mos/trunk/luci-app-mosdns
 merge_package https://github.com/project-lede/luci-app-godproxy
 merge_package https://github.com/Beginner-Go/luci-app-tencentddns
 merge_package https://github.com/sundaqiang/openwrt-packages/trunk/luci-app-services-wolplus
@@ -37,3 +41,6 @@ merge_package https://github.com/coolsnowwolf/lede/trunk/package/lean/luci-app-u
 merge_package https://github.com/kuoruan/luci-app-frpc
 merge_package https://github.com/small-5/luci-app-adblock-plus
 merge_package https://github.com/zxlhhyccc/luci-app-v2raya
+merge_package https://github.com/messense/aliyundrive-webdav/trunk/openwrt/aliyundrive-webdav
+merge_package https://github.com/messense/aliyundrive-webdav/trunk/openwrt/luci-app-aliyundrive-webdav
+drop_package luci-app-cd8021x
