@@ -142,7 +142,6 @@ jobs:
           path: ./artifact/buildinfo/
 
       - name: Save cache state
-        #if: env.TG
         run: |
           cd
           sleep 60
