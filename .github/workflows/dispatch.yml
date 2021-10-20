@@ -2,7 +2,8 @@ name: Repo Dispatcher
 on:
   schedule:
     - cron: 00 21 * * *
-  inputs:
+  workflow_dispatch:
+    inputs:
       package_clean:
         description: 'check to make clean package'
         default: 'false'
