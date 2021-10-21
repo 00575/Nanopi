@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 1
         
       - name: 设置帐户
-        run: git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
+        run: git config --global user.name '00575' && git config --global user.email 'xixiaaijia@gmail.com'
 
       - name: 复制
         run: |
