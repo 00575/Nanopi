@@ -20,12 +20,13 @@ sed -i '/skip\=/ a skip=`mount | grep -q /dev/$device; echo $?`' `find package/ 
 mkdir -p `find package/ -follow -type d -path '*/pdnsd-alt'`/patches
 mv $GITHUB_WORKSPACE/patches/99-disallow-aaaa.patch `find package/ -follow -type d -path '*/pdnsd-alt'`/patches
 
-sed -i 's/5.0/1.0/' .ccache/ccache.conf
+sed -i 's/5.0/1.0/' .ccache/ccache.conf || true
 
 if [ $BRANCH == 'master' ]; then
 
-  sed -i 's/5.10/5.4/' target/linux/rockchip/Makefile
-  git revert --no-commit -X theirs 91eed5d9fb74e6c740291362ba12e11a2222a9fd
+  #sed -i 's/5.10/5.4/' target/linux/rockchip/Makefile
+  #git revert --no-commit -X theirs 91eed5d9fb74e6c740291362ba12e11a2222a9fd
+  rm -r package/feeds/luci/luci-app-cifs
 
   # fix po path for snapshot
   find package/ -follow -type d -path '*/po/zh-cn' | xargs dirname | xargs -n1 -i sh -c "rm -f {}/zh_Hans; ln -sf zh-cn {}/zh_Hans"
@@ -76,11 +77,11 @@ case $status_page in
   *htm)
     line_number_FV=`grep -n 'Firmware Version' $status_page | cut -d: -f 1`
     sed -i '/ver\./d' $status_page
-    sed -i $line_number_FV'  '$strDate $status_page
+    sed -i $line_number_FV' a <a href="https://github.com/00575/Nanopi" target="_blank">klever1988/nanopi-openwrt</a> '$strDate $status_page
     ;;
   *js)
     line_number_FV=`grep -m1 -n 'var fields' $status_page | cut -d: -f1`
-    sed -i $line_number_FV' i var pfv = document.createElement('\''placeholder'\'');pfv.innerHTML = '\'' '$strDate"';" $status_page
+    sed -i $line_number_FV' i var pfv = document.createElement('\''placeholder'\'');pfv.innerHTML = '\''<a href="https://github.com/00575/Nanopi" target="_blank">klever1988/nanopi-openwrt</a> '$strDate"';" $status_page
     line_number_FV=`grep -n 'Firmware Version' $status_page | cut -d : -f 1`
     sed -i '/Firmware Version/d' $status_page
     sed -i $line_number_FV' a _('\''Firmware Version'\''), pfv,' $status_page
