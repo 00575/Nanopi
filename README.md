@@ -42,3 +42,8 @@ docker版
 ```bash
 wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate.sh | ver=-with-docker sh
 ```
+
+临时测试
+```bash
+wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/Test-update.sh | sh
+```
