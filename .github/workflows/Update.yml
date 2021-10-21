@@ -32,7 +32,7 @@ jobs:
           rm -rf new
           
       - name: 修改
-        run: sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?' scripts/patches.sh
+        run: sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
          
       - name: 添加文件到暂存区
         run: git add .
