@@ -1,7 +1,6 @@
 name: Update
 
 on: 
-  #repository_dispatch:
   workflow_dispatch:
   schedule:
     - cron: 00 20 * * *
@@ -34,7 +33,7 @@ jobs:
       - name: 修改文件
         run: | 
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
-          sed -i 's/openwrt2020/Argon/g' scripts/patches.sh
+          sed -i 's/openwrt2020/argon/g' scripts/patches.sh
          
       - name: 添加文件到暂存区
         run: git add .
