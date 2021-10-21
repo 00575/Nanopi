@@ -35,10 +35,9 @@ else
 		exit 1
 	fi
 fi
-set -e
 
-sed -i 's/-slim//;s/-with-docker//' md5sum.txt
-if [ `md5sum -c md5sum.txt|grep -c "OK"` -eq 0 ]; then
+md5r=`awk '{print $1}' md5sum.txt`
+if [ $md5r != $md5sum ]; then
 	echo -e '\e[91m固件HASH值匹配失败，脚本退出\e[0m'
 	exit 1
 fi
