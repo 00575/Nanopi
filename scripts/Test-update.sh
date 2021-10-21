@@ -35,16 +35,18 @@ else
 		exit 1
 	fi
 fi
+set -e
 
-md5r=`awk '{print $1}' md5sum.txt`
-if [ $md5r != $md5sum ]; then
+sed -i 's/-slim//;s/-with-docker//' md5sum.txt
+if [ `md5sum -c md5sum.txt|grep -c "OK"` -eq 0 ]; then
 	echo -e '\e[91m固件HASH值匹配失败，脚本退出\e[0m'
 	exit 1
 fi
 
 mv $board_id.img FriendlyWrt.img
-[ $board_id = 'x86' ] && drive='sda' || device='mmcblk0'
-bs=`expr $(cat /sys/block/$drive/size) \* 512`
+block_device='mmcblk0'
+[ $board_id = 'x86' ] && block_device='sda'
+bs=`expr $(cat /sys/block/$block_device/size) \* 512`
 truncate -s $bs FriendlyWrt.img || ../truncate -s $bs FriendlyWrt.img
 echo ", +" | sfdisk -N 2 FriendlyWrt.img
 
@@ -78,8 +80,8 @@ echo -e '\e[92m开始写入，请勿中断...\e[0m'
 if [ -f FriendlyWrt.img ]; then
 	echo 1 > /proc/sys/kernel/sysrq
 	echo u > /proc/sysrq-trigger && umount / || true
-	#pv FriendlyWrt.img | dd of=/dev/mmcblk0 conv=fsync
-	dd if=FriendlyWrt.img of=/dev/$drive conv=sparse status=progress
+	#pv FriendlyWrt.img | dd of=/dev/$block_device conv=fsync
+	../ddnz FriendlyWrt.img /dev/$block_device
 	echo -e '\e[92m刷机完毕，正在重启...\e[0m'
 	echo b > /proc/sysrq-trigger
 fi
