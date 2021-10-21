@@ -30,6 +30,11 @@ jobs:
           cp -rf new/scripts/merge_packages.sh ./scripts/
           cp -rf new/scripts/patches.sh ./scripts/
           rm -rf new
+          
+      - name: 修改
+        run: |
+          cd SCRIPTS
+          sed -i '22a sed -i 's/klever1988/nanopi-openwrt/00575/Nanopi/' package/base-files/files/bin/config_generate' patches.sh
          
       - name: 添加文件到暂存区
         run: git add .
