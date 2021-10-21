@@ -19,11 +19,11 @@ jobs:
       - name: 设置帐户
         run: git config --global user.name '00575' && git config --global user.email 'xixiaaijia@gmail.com'
 
-      - name: 复制
+      - name: 拉取
         run: |
           svn export https://github.com/klever1988/nanopi-openwrt/trunk/ new
         
-      - name: 整理
+      - name: 复制整理
         run: | 
           cp -rf new/*.seed ./
           cp -rf new/scripts/merge_files.sh ./scripts/
@@ -31,8 +31,10 @@ jobs:
           cp -rf new/scripts/patches.sh ./scripts/
           rm -rf new
           
-      - name: 修改
-        run: sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
+      - name: 修改文件
+        run: | 
+          sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
+          sed -i 's/openwrt2020/Argon/g' scripts/patches.sh
          
       - name: 添加文件到暂存区
         run: git add .
