@@ -37,7 +37,7 @@ else
 fi
 
 md5r=`awk '{print $1}' md5sum.txt`
-if [ $md5r != $md5sum ]; then
+if [ `md5sum -c md5sum.txt|grep -c "OK"` -eq 0 ]; then
 	echo -e '\e[91m固件HASH值匹配失败，脚本退出\e[0m'
 	exit 1
 fi
