@@ -25,15 +25,15 @@ jobs:
         
       - name: 整理
         run: | 
-          #cp -f new/*.seed ./
-          mv new/*.seed ./
+          cp -rf new/*.seed ./
+          #mv new/*.seed ./
           rm -rf new
          
       - name: 添加文件到暂存区
         run: git add .
              
-      #- name: 暂存区全部文件替换工作区
-        #run: git checkout .
+      - name: 暂存区全部文件替换工作区
+        run: git checkout .
 
       - name: 提交
         run: git commit -am 'Update'
