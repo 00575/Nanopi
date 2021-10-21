@@ -26,7 +26,9 @@ jobs:
       - name: 整理
         run: | 
           cp -rf new/*.seed ./
-          #mv new/*.seed ./
+          cp -rf new/scripts/merge_files.sh ./scripts/
+          cp -rf new/scripts/merge_packages.sh ./scripts/
+          cp -rf new/scripts/patches.sh ./scripts/
           rm -rf new
          
       - name: 添加文件到暂存区
