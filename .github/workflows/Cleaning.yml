@@ -15,7 +15,7 @@ jobs:
     - name: Delete Older Releases
       uses: dev-drprasad/delete-older-releases@master
       with:
-        keep_latest: 9
+        keep_latest: 30
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
