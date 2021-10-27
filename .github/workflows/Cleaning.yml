@@ -4,14 +4,14 @@ on:
   workflow_dispatch:
   schedule:
     - cron: 01 22 * * 5
-  #watch:
-    #types: started
+  watch:
+    types: started
 
 jobs:
   
   Cleanup-Old-Releases:
     runs-on: ubuntu-20.04
-    if: github.event.repository.owner.id == github.event.sender.id
+    #if: github.event.repository.owner.id == github.event.sender.id
     steps:  
     - name: Delete Older Releases
       uses: dev-drprasad/delete-older-releases@master
@@ -23,7 +23,7 @@ jobs:
 
   Cleanup-Old-Artifacts:
     runs-on: ubuntu-20.04
-    if: github.event.repository.owner.id == github.event.sender.id
+    #if: github.event.repository.owner.id == github.event.sender.id
     steps:
     - name: Cleanup Old Action Artifacts
       uses: kolpav/purge-artifacts-action@master
@@ -33,7 +33,7 @@ jobs:
         
   Cleanup-Workflow-Logs:
     runs-on: ubuntu-20.04
-    if: github.event.repository.owner.id == github.event.sender.id
+    #if: github.event.repository.owner.id == github.event.sender.id
     steps:
       - name: Cleanup Workflow Logs
         uses: Mattraks/delete-workflow-runs@main
