@@ -1,8 +1,9 @@
 name: Cleaning
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: 1 1 * * 1
+    - cron: 01 22 * * 5
   watch:
     types: started
 
