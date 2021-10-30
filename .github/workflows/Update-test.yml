@@ -36,6 +36,6 @@ jobs:
     - name: Trigger Compile
       run: |
         curl \
-        -X POST https://api.github.com/repos/${{ github.repository }}/actions/workflows/6258556/dispatches \
+        -X POST https://api.github.com/repos/${{ github.repository }}/actions/workflows/12635960/dispatches \
         -H "Accept: application/vnd.github.v3+json" \
         -H "Authorization: token ${{ secrets.SEC_TOKEN }}" \
