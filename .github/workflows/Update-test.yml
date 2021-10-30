@@ -39,4 +39,4 @@ jobs:
         -X POST https://api.github.com/repos/${{ github.repository }}/actions/workflows/12635960/dispatches \
         -H "Accept: application/vnd.github.v3+json" \
         -H "Authorization: token ${{ secrets.workflow_token }}" \
-        -d '{"ref": "master", "device": "${{ matrix.device }}", "package_clean": "${{ github.event.inputs.package_clean }}" }}'
+        -d '{{"ref": "master", "device": "${{ matrix.device }}", "package_clean": "${{ github.event.inputs.package_clean }}" }}'
