@@ -15,10 +15,6 @@ jobs:
 
     steps:
 
-    - name: 设置帐户
-      run: git config --global user.name '00575' && git config --global user.email 'xixiaaijia@gmail.com'
-
-
     - name: Get Commit Hash
       id: getHash
       run: |
