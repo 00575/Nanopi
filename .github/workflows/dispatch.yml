@@ -2,7 +2,7 @@ name: Repo Dispatcher
 on:
   schedule:
     - cron: 00 21 * * *
-  repository_dispatch：
+  repository_dispatch:
   workflow_dispatch:
     inputs:
       package_clean:
