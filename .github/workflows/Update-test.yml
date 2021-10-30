@@ -1,7 +1,7 @@
 name: Update-test
 
 env:
-  REPO_URL: https://github.com/a0575/file
+  REPO_URL: https://github.com/00575/file
   REPO_BRANCH: master
 
 on:
