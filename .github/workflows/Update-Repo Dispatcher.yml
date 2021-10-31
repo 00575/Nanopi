@@ -1,4 +1,4 @@
-name: Update-test
+name: Update Repo Dispatcher
 
 env:
   REPO_URL: https://github.com/00575/file
