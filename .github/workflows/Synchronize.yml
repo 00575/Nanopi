@@ -1,4 +1,4 @@
-name: Update
+name: Synchronize
 
 on: 
   workflow_dispatch:
