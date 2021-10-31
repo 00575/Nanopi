@@ -40,6 +40,7 @@ jobs:
           echo ${{ steps.getHash.outputs.commitHash }} | tee .commitHash
 
       #- name: Trigger Compile
+        #if: steps.cacheHash.outputs.cache-hit != 'true'
         #run: |
           #curl \
           #-X POST https://api.github.com/repos/${{ github.repository }}/actions/workflows/12635960/dispatches \
