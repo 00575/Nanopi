@@ -1,4 +1,4 @@
-name: Synchronize
+name: Synchronization Update
 
 on: 
   workflow_dispatch:
