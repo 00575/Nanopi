@@ -1,4 +1,4 @@
-name: Update Repo Dispatcher
+name: Kernel update
 
 env:
   REPO_URL: https://github.com/00575/file
