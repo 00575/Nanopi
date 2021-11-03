@@ -43,7 +43,7 @@ jobs:
         run: git checkout .
 
       - name: 提交
-        run: git commit -am 'Update'
+        run: git commit -am 'update$(TZ='Asia/Shanghai' date +-%m.%d)'
 
       - name: 更新
         run: git push
