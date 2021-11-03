@@ -1,4 +1,4 @@
-name: Code update
+name: update
 
 on: 
   workflow_dispatch:
