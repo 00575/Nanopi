@@ -22,7 +22,7 @@ jobs:
       - name: 拉取
         run: |
           svn export https://github.com/klever1988/nanopi-openwrt/trunk/ new
-          wget -q scripts/kernel https://github.com/immortalwrt/immortalwrt/raw/openwrt-18.06-k5.4/include/kernel-version.mk
+          wget -qO scripts/kernel https://github.com/immortalwrt/immortalwrt/raw/openwrt-18.06-k5.4/include/kernel-version.mk
         
       - name: 复制整理
         run: | 
