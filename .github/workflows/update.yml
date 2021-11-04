@@ -44,11 +44,6 @@ jobs:
           rm -rf kernel-version.mk
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
           sed -i 's/openwrt2020/argon/g' scripts/patches.sh
-          
-      #- name: 修改文件
-        #run: | 
-          #sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
-          #sed -i 's/openwrt2020/argon/g' scripts/patches.sh
          
       - name: 添加文件到暂存区
         run: git add .
@@ -68,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        device: [x86]
+        device: [r1p, r1s, r1s-h3, r2c, r2s, r4s, x86]
     
     steps:
       - name: Trigger Compile
