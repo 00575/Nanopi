@@ -19,12 +19,11 @@ jobs:
         with:
           fetch-depth: 1
  
-      - name: 设置当前的日期
-        #id: date
+      - name: 设置日期
         run: |
           sudo timedatectl set-timezone "$TZ"
           #echo "date=$(date +'%m/%d_%Y_%H/%M')" >> $GITHUB_ENV
-          echo "date=$(date +'%m.%d.%Y')" >> $GITHUB_ENV
+          echo "date=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
  
       - name: 设置帐户
         run: git config --global user.name '00575' && git config --global user.email 'xixiaaijia@gmail.com'
@@ -32,15 +31,19 @@ jobs:
       - name: 克隆源码
         run: |
           svn export https://github.com/klever1988/nanopi-openwrt/trunk/ new
-          wget -qO scripts/kernel https://github.com/immortalwrt/immortalwrt/raw/openwrt-18.06-k5.4/include/kernel-version.mk
-        
+          #wget -qO scripts/kernel https://github.com/immortalwrt/immortalwrt/raw/openwrt-18.06-k5.4/include/kernel-version.mk
+          wget https://github.com/immortalwrt/immortalwrt/raw/openwrt-18.06-k5.4/include/kernel-version.mk
+
       - name: 复制整理
         run: | 
           cp -rf new/*.seed ./
           cp -rf new/scripts/merge_files.sh ./scripts/
           cp -rf new/scripts/merge_packages.sh ./scripts/
           cp -rf new/scripts/patches.sh ./scripts/
+          sed -i '8,14!d' kernel-version.mk
+          cp -rf kernel-version.mk scripts/kernel
           rm -rf new
+          rm -rf 
           
       - name: 修改文件
         run: | 
@@ -54,7 +57,7 @@ jobs:
         run: git checkout .
 
       - name: 提交
-        run: git commit -am 'update${{ env.date }}'
+        run: git commit -am 'update-${{ env.date }}'
 
       - name: 更新
         run: git push
