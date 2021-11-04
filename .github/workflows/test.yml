@@ -1,0 +1,50 @@
+name: TEST
+
+on: 
+  workflow_dispatch:
+  schedule:
+    - cron: 00 20 * * *
+
+jobs:
+  build_packages:
+    name: update
+    runs-on: ubuntu-20.04
+    
+    steps:
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+        
+      - name: 设置帐户
+        run: git config --global user.name '00575' && git config --global user.email 'xixiaaijia@gmail.com'
+
+      - name: 拉取
+        run: |
+          svn export https://github.com/klever1988/nanopi-openwrt/trunk/ new
+          wget -P scripts/kernel https://github.com/immortalwrt/immortalwrt/raw/openwrt-18.06-k5.4/include/kernel-version.mk
+        
+      - name: 复制整理
+        run: | 
+          cp -rf new/*.seed ./
+          cp -rf new/scripts/merge_files.sh ./scripts/
+          cp -rf new/scripts/merge_packages.sh ./scripts/
+          cp -rf new/scripts/patches.sh ./scripts/
+          rm -rf new
+          
+      - name: 修改文件
+        run: | 
+          sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
+          sed -i 's/openwrt2020/argon/g' scripts/patches.sh
+         
+      - name: 添加文件到暂存区
+        run: git add .
+             
+      - name: 暂存区全部文件替换工作区
+        run: git checkout .
+
+      - name: 提交
+        run: git commit -am 'update$(TZ='Asia/Shanghai' date +-%m.%d)'
+
+      - name: 更新
+        run: git push
