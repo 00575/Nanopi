@@ -19,24 +19,12 @@ jobs:
         with:
           fetch-depth: 1
  
-      - name: 初始化环境
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 python2.7 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx-ucl libelf-dev autoconf automake libtool autopoint device-tree-compiler ccache xsltproc rename antlr3 gperf wget curl swig rsync
-          sudo -E apt-get -qq autoremove --purge
-          sudo -E apt-get -qq clean
-          sudo timedatectl set-timezone "$TZ"
- 
       - name: 设置当前的日期
-        id: date
+        #id: date
         run: |
-          #echo "date1=$(date +'%m/%d_%Y_%H/%M')" >> $GITHUB_ENV
-          #echo "date2=$(date +'%m/%d %Y')" >> $GITHUB_ENV
-          echo "date=$(date +'%m.%d')" >> $GITHUB_ENV
-          #echo "date4=$(date +'%m.%d.%Y')" >> $GITHUB_ENV
+          sudo timedatectl set-timezone "$TZ"
+          #echo "date=$(date +'%m/%d_%Y_%H/%M')" >> $GITHUB_ENV
+          echo "date=$(date +'%m.%d.%Y')" >> $GITHUB_ENV
  
       - name: 设置帐户
         run: git config --global user.name '00575' && git config --global user.email 'xixiaaijia@gmail.com'
