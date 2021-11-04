@@ -43,12 +43,14 @@ jobs:
           sed -i '8,14!d' kernel-version.mk
           cp -rf kernel-version.mk scripts/kernel
           rm -rf new
-          rm -rf 
-          
-      - name: 修改文件
-        run: | 
+          rm -rf kernel-version.mk
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
           sed -i 's/openwrt2020/argon/g' scripts/patches.sh
+          
+      #- name: 修改文件
+        #run: | 
+          #sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
+          #sed -i 's/openwrt2020/argon/g' scripts/patches.sh
          
       - name: 添加文件到暂存区
         run: git add .
