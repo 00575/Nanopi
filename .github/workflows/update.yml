@@ -9,7 +9,7 @@ on:
   #TZ: Asia/Shanghai
 
 jobs:
-  update:
+  jell:
     runs-on: ubuntu-20.04
     
     steps:
