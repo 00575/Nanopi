@@ -5,8 +5,8 @@ on:
   schedule:
     - cron: 00 20 * * *
 
-env:
-  TZ: Asia/Shanghai
+#env:
+  #TZ: Asia/Shanghai
 
 jobs:
   update:
