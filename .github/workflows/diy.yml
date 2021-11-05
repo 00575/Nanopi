@@ -48,13 +48,17 @@ jobs:
           LUCI=$(cat $GITHUB_WORKSPACE/$DEVICE.config.seed $GITHUB_WORKSPACE/common.seed | grep CONFIG_PACKAGE_luci-app | grep -v docker | sed 's/CONFIG_PACKAGE_//;s/=y//' | xargs -n1 -i grep -o {} package.files | sort -u | xargs echo)
           LP=$(echo $LUCI | sed 's/-app-/-i18n-/g;s/ /\n/g' | xargs -n1 -i grep -o {}-zh-cn package.files | xargs echo)
           make image PACKAGES="$PACKAGES $LUCI $LP luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn" FILES="files"
-          
+
           mkdir -p $GITHUB_WORKSPACE/release
           mv $(ls -1 ./bin/targets/*/*/*img.gz | head -1) $GITHUB_WORKSPACE/release/$DEVICE.img.gz
           cd $GITHUB_WORKSPACE/release/ && md5sum $DEVICE.img.gz > $DEVICE.img.gz.md5
           gzip -dc $DEVICE.img.gz | md5sum | sed "s/-/$DEVICE.img/" > $DEVICE.img.md5
           echo "strDate=$(TZ=UTC-8 date +%Y-%m-%d)" >> $GITHUB_ENV
           echo "strDevice=$(echo $DEVICE | awk '{print toupper($0)}')" >> $GITHUB_ENV
+
+          if [[ ${{ github.event.client_payload.device || github.event.inputs.device }} == *"r1s"* ]]; then
+            exit 0
+          fi
       
       - name: Deliver firmware
         uses: actions/upload-artifact@v2
