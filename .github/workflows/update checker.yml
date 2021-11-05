@@ -1,4 +1,4 @@
-name: update
+name: Update Checker
 
 on: 
   workflow_dispatch:
@@ -57,7 +57,13 @@ jobs:
       - name: 更新
         run: git push
 
-  Repo-Dispatcher:
+      - name: 删除工作流
+        uses: GitRML/delete-workflow-runs@main
+        with:
+          retain_days: 1
+          keep_minimum_runs: 0
+
+Repo-Dispatcher:
     needs: update
     runs-on: ubuntu-20.04
     strategy:
