@@ -63,7 +63,7 @@ jobs:
           retain_days: 1
           keep_minimum_runs: 0
 
-Repo-Dispatcher:
+  Repo-Dispatcher:
     needs: update
     runs-on: ubuntu-20.04
     strategy:
