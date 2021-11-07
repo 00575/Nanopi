@@ -10,9 +10,6 @@ on:
   schedule:
     - cron: 00 20 * * *
 
-env:
-  TZ: Asia/Shanghai
-
 jobs:
   update:
     runs-on: ubuntu-20.04
@@ -22,9 +19,9 @@ jobs:
         with:
           fetch-depth: 1
  
-      - name: 设置日期
+      - name: 设置当前的日期
+        id: date
         run: |
-          sudo timedatectl set-timezone "$TZ"
           #echo "date=$(date +'%m/%d_%Y_%H/%M')" >> $GITHUB_ENV
           echo "date=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
  
