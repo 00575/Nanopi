@@ -4,6 +4,11 @@ on:
   workflow_dispatch:
   schedule:
     - cron: 00 20 * * *
+    inputs:
+      package_clean:
+        description: 'check to make clean package'
+        default: 'false'
+        required: true
 
 env:
   TZ: Asia/Shanghai
