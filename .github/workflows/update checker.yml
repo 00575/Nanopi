@@ -54,6 +54,7 @@ jobs:
         run: git checkout .
 
       - name: 提交
+        continue-on-error: true
         run: git commit -am 'update-${{ env.date }}'
 
       - name: 更新
