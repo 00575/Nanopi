@@ -28,9 +28,9 @@ jobs:
       - name: 设置帐户
         run: git config --global user.name '00575' && git config --global user.email 'xixiaaijia@gmail.com'
 
-      - name: 克隆源码
+      - name: 更新文件
         run: |
-          svn export https://github.com/klever1988/nanopi-openwrt/trunk/ new
+          svn export https://github.com/klever1988/nanopi-openwrt/trunk/ ./new
           cp -rf new/*.seed ./
           cp -rf new/scripts/merge_files.sh ./scripts/
           cp -rf new/scripts/merge_packages.sh ./scripts/
@@ -38,14 +38,12 @@ jobs:
           sed -i 's/openwrt2020/argon/g' scripts/patches.sh
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
           rm -rf new
-
           wget -qO scripts/kernel https://github.com/immortalwrt/immortalwrt/raw/openwrt-18.06-k5.4/include/kernel-version.mk
           sed -i '8,14!d' scripts/kernel
           #wget https://github.com/immortalwrt/immortalwrt/raw/openwrt-18.06-k5.4/include/kernel-version.mk
           #sed -i '8,14!d' kernel-version.mk
           #cp -rf kernel-version.mk scripts/kernel
           #rm -rf kernel-version.mk
-
           wget -qO scripts/autoupdate.sh https://github.com/klever1988/nanopi-openwrt/raw/scripts/autoupdate.sh
           sed -i 's？klever1988/nanopi-openwrt？00575/Nanopi？g' scripts/autoupdate.sh
           wget -qO scripts/autoupdate-bash.sh https://github.com/klever1988/nanopi-openwrt/raw/scripts/autoupdate-bash.sh
