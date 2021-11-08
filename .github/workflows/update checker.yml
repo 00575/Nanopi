@@ -39,11 +39,12 @@ jobs:
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
           rm -rf new
 
-          #wget -qO scripts/kernel https://github.com/immortalwrt/immortalwrt/raw/openwrt-18.06-k5.4/include/kernel-version.mk
-          wget https://github.com/immortalwrt/immortalwrt/raw/openwrt-18.06-k5.4/include/kernel-version.mk
-          sed -i '8,14!d' kernel-version.mk
-          cp -rf kernel-version.mk scripts/kernel
-          rm -rf kernel-version.mk
+          wget -qO scripts/kernel https://github.com/immortalwrt/immortalwrt/raw/openwrt-18.06-k5.4/include/kernel-version.mk
+          sed -i '8,14!d' scripts/kernel
+          #wget https://github.com/immortalwrt/immortalwrt/raw/openwrt-18.06-k5.4/include/kernel-version.mk
+          #sed -i '8,14!d' kernel-version.mk
+          #cp -rf kernel-version.mk scripts/kernel
+          #rm -rf kernel-version.mk
 
           wget -qO scripts/autoupdate.sh https://github.com/klever1988/nanopi-openwrt/raw/scripts/autoupdate.sh
           sed -i 's？klever1988/nanopi-openwrt？00575/Nanopi？g' scripts/autoupdate.sh
