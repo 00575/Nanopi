@@ -28,7 +28,7 @@ jobs:
       - name: 设置帐户
         run: git config --global user.name '00575' && git config --global user.email 'xixiaaijia@gmail.com'
 
-      - name: 克隆源码
+      - name: 下载文件
         run: |
           svn export https://github.com/klever1988/nanopi-openwrt/trunk/ new
           #wget -qO scripts/kernel https://github.com/immortalwrt/immortalwrt/raw/openwrt-18.06-k5.4/include/kernel-version.mk
