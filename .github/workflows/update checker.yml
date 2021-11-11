@@ -62,8 +62,8 @@ jobs:
       - name: 删除工作流
         uses: GitRML/delete-workflow-runs@main
         with:
-          retain_days: 1
-          keep_minimum_runs: 0
+          retain_days: 3
+          keep_minimum_runs: 10
 
   Repo-Dispatcher:
     needs: update
