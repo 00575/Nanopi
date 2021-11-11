@@ -191,7 +191,7 @@ jobs:
         run: |
           sudo apt update && sudo apt install qemu-utils
           sudo sysctl vm.swappiness=0
-          curl -L https://github.com/00575/file/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
+          curl -L https://github.com/00575/file/releases/download/5.10.x/ib-$DEVICE.tar.xz | tar -Jxvf -
           mv *imagebuilder* ib && cd ib
           . $GITHUB_WORKSPACE/scripts/merge_files.sh
           mkdir -p files/local_feed && sudo mount --bind packages files/local_feed
@@ -215,7 +215,7 @@ jobs:
         with:
           repo_token: ${{ secrets.workflow_token }}
           file: ./release/*
-          tag: ${{env.strDate}}
+          tag: ${{env.strDate}}_5.10.x
           file_glob: true
           overwrite: true
           release_name: ${{env.strDate}} 自动发布
@@ -238,7 +238,7 @@ jobs:
         run: |
           sudo apt update && sudo apt install qemu-utils
           sudo sysctl vm.swappiness=0
-          curl -L https://github.com/00575/file/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
+          curl -L https://github.com/00575/file/releases/download/5.10.x/ib-$DEVICE.tar.xz | tar -Jxvf -
            mv *imagebuilder* ib && cd ib
           . $GITHUB_WORKSPACE/scripts/merge_files.sh
           sed -i '/local/d;s/#//' files/etc/opkg/distfeeds.conf
@@ -277,7 +277,7 @@ jobs:
         with:
           repo_token: ${{ secrets.workflow_token }}
           file: ./release/*
-          tag: ${{env.strDate}}
+          tag: ${{env.strDate}}_5.10.x
           file_glob: true
           overwrite: true
           release_name: ${{env.strDate}} 自动发布
