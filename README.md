@@ -3,7 +3,11 @@ https://github.com/00575/Nanopi/releases
 
 (支持设备：r1s r2s r4s r1p r1s-h3 x86 r2c )
 
-登录IP：192.168.2.1 默认用户名：root 密码：password
+登录IP：192.168.2.1 
+
+默认用户名：root 
+
+密码：password
 
 ### 固件特性：
 
