@@ -44,7 +44,7 @@ jobs:
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/autoupdate.sh
           wget -qO scripts/autoupdate-bash.sh https://github.com/klever1988/nanopi-openwrt/raw/master/scripts/autoupdate-bash.sh
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/autoupdate-bash.sh
-          sed -i '/192.168.2.1/a\cp -f scripts/banner package/base-files/files/etc/banner' scripts/patches.sh
+          sed -i '/192.168.2.1/a\cp -f $GITHUB_WORKSPACE/scripts/banner package/base-files/files/etc/banner' scripts/patches.sh
                              
       - name: 添加文件到暂存区
         run: git add .
