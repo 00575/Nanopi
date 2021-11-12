@@ -11,6 +11,7 @@ sed -i 's/192.168.1.1/192.168.2.1/' package/base-files/files/bin/config_generate
 cp -f $GITHUB_WORKSPACE/scripts/banner package/base-files/files/etc/banner
 cp -f $GITHUB_WORKSPACE/scripts/banner package/base-files/files/etc/banner
 cp -f $GITHUB_WORKSPACE/scripts/banner package/base-files/files/etc/banner
+cp -f $GITHUB_WORKSPACE/scripts/banner package/base-files/files/etc/banner
 sed -i 's/=1/=0/g' package/kernel/linux/files/sysctl-br-netfilter.conf
 
 sed -i '/DEPENDS/ s/$/ +libcap-bin/' `find package/ -follow -type f -path '*/luci-app-openclash/Makefile'`
