@@ -1,4 +1,4 @@
-name: build_5.4.x
+name: build 5.4.x
 
 on:
   repository_dispatch:
