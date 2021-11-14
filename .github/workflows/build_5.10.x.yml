@@ -218,7 +218,8 @@ jobs:
           tag: ${{env.strDate}}_5.10.x
           file_glob: true
           overwrite: true
-          release_name: ${{env.strDate}} 自动发布
+          release_name: ${{env.strDate}} 发布
+          body: "5.10.X内核编译"
 
   generate_firmware:
     needs: build_packages
@@ -280,4 +281,5 @@ jobs:
           tag: ${{env.strDate}}_5.10.x
           file_glob: true
           overwrite: true
-          release_name: ${{env.strDate}} 自动发布
+          release_name: ${{env.strDate}} 发布
+          body: "5.10.X内核编译"
