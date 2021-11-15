@@ -1,4 +1,4 @@
-### 固件发布地址：
+### 固件发布：
 https://github.com/00575/Nanopi/releases
 
 (支持设备：r1s r2s r4s r1p r1s-h3 x86 r2c )
