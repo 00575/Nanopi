@@ -34,7 +34,7 @@ jobs:
           cp -rf new/*.seed ./
           cp -rf new/scripts/merge_files.sh ./scripts/
           cp -rf new/scripts/merge_packages.sh ./scripts/
-          cp -rf new/scripts/patches.sh ./scripts/
+          cp -rf new/scripts/patches.sh ./scripts/patches_5.4.x.sh
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
           sed -i 's/openwrt2020/argon/g' scripts/patches.sh
           rm -rf new
@@ -44,7 +44,7 @@ jobs:
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/autoupdate.sh
           wget -qO scripts/autoupdate-bash.sh https://github.com/klever1988/nanopi-openwrt/raw/master/scripts/autoupdate-bash.sh
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/autoupdate-bash.sh
-          sed -i '/192.168.2.1/a\cp -f $GITHUB_WORKSPACE/assets/banner package/base-files/files/etc/banner' scripts/patches.sh
+          sed -i '/192.168.2.1/a\cp -f $GITHUB_WORKSPACE/assets/banner package/base-files/files/etc/banner' scripts/patches_5.4.x.sh
           #sed -i '/192.168.2.1/a\cp -f $GITHUB_WORKSPACE/assets/banner package/base-files/files/etc/banner' scripts/patches_5.10.x.sh
                       
       - name: 添加文件到暂存区
