@@ -39,7 +39,7 @@ jobs:
           sed -i 's/openwrt2020/argon/g' scripts/patches.sh
           rm -rf new
           wget -qO scripts/kernel https://github.com/immortalwrt/immortalwrt/raw/master/include/kernel-version.mk
-          sed -i '8,14!d' scripts/kernel
+          sed -i '8,10!d' scripts/kernel
           wget -qO scripts/autoupdate.sh https://github.com/klever1988/nanopi-openwrt/raw/master/scripts/autoupdate.sh
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/autoupdate.sh
           wget -qO scripts/autoupdate-bash.sh https://github.com/klever1988/nanopi-openwrt/raw/master/scripts/autoupdate-bash.sh
