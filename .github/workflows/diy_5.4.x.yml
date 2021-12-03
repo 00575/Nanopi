@@ -1,4 +1,4 @@
-name: DIY (5.4.x内核)
+name: DIY 自定义编译(5.4.x内核)
 
 on:
   workflow_dispatch:
