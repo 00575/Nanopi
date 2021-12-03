@@ -1,4 +1,4 @@
-name: DIY
+name: DIY (5.4.x内核)
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
-    #if: github.event.repository.owner.id == github.event.sender.id
+    if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
 
@@ -36,7 +36,7 @@ jobs:
         run: |
           sudo apt update && sudo apt install qemu-utils
           sudo sysctl vm.swappiness=0
-          curl -L https://github.com/00575/file/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
+          curl -L https://github.com/00575/5.4.x_cache/releases/download/cache/ib-$DEVICE.tar.xz | tar -Jxvf -
           mv *imagebuilder* ib && cd ib
           . $GITHUB_WORKSPACE/scripts/merge_files.sh
           sed -i '/local/d;s/#//' files/etc/opkg/distfeeds.conf
