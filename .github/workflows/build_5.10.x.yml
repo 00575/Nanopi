@@ -152,18 +152,18 @@ jobs:
           sudo umount lede
           sudo losetup -d $LOOP_DEVICE
           export AUTH="Authorization: token ${{ secrets.workflow_token }}"
-          export cache_path='github.com/repos/00575/file/releases'
-          export cache_repo_id='53158384'
+          export cache_path='github.com/repos/00575/5.10.x_cache/releases'
+          export cache_repo_id='54548644'
           zstdmt -c --long lede.img | split --numeric=1 -b 2000m - lede.$DEVICE.img.zst.
           while true; do
-          ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/5.10.x")
+          ret=$(curl -sH "$AUTH" "https://api.$cache_path/tags/cache")
           echo $ret | jq -r '.assets[] | select(.name | contains ("'$DEVICE'.img")).id' | \
           xargs -n1 -i curl -X DELETE -H "$AUTH" "https://api.$cache_path/assets/{}"
           echo $ret | jq -r '.assets[] | select(.name == "ib-'$DEVICE'.tar.xz").id' | \
           xargs -n1 -i curl -X DELETE -H "$AUTH" "https://api.$cache_path/assets/{}"
           ls *img.zst* ib-$DEVICE.tar.xz | parallel --wc 'while true; do curl -T {} -H "$AUTH" -H "Content-Type: application/octet-stream" "https://uploads.$cache_path/$cache_repo_id/assets?name={}" && break || true; done'
           set +e
-          for i in {1..20}; do curl -sL --fail https://github.com/00575/file/releases/download/5.10.x/lede.$DEVICE.img.zst.0$i || break; done | zstdmt -d -o /dev/null
+          for i in {1..20}; do curl -sL --fail https://github.com/00575/5.10.x_cache/releases/download/cache/lede.$DEVICE.img.zst.0$i || break; done | zstdmt -d -o /dev/null
           if [ $? -eq 0 ]; then break; fi
           done
           set -e
