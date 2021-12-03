@@ -8,7 +8,6 @@ sed -i "s/option limit_enable '1'/option limit_enable '0'/" `find package/ -foll
 sed -i "s/option enabled '1'/option enabled '0'/" `find package/ -follow -type f -path '*/vsftpd/files/vsftpd.uci'`
 sed -i "/\/etc\/coremark\.sh/d" `find package/ -follow -type f -path '*/coremark/coremark'`
 sed -i 's/192.168.1.1/192.168.2.1/' package/base-files/files/bin/config_generate
-cp -f $GITHUB_WORKSPACE/assets/banner target/linux/rockchip/armv8/base-files/etc/banner
 sed -i 's/=1/=0/g' package/kernel/linux/files/sysctl-br-netfilter.conf
 
 sed -i '/DEPENDS/ s/$/ +libcap-bin/' `find package/ -follow -type f -path '*/luci-app-openclash/Makefile'`
