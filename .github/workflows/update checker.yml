@@ -31,9 +31,9 @@ jobs:
  
       - name: 设置帐户
         run: |
-          #git config --global user.name '00575' && git config --global user.email 'xixiaaijia@gmail.com'
-          git config --local user.email "action@github.com" && git config --local user.name "GitHub Action"
-
+          git config --local user.name "GitHub Action" && git config --local user.email "action@github.com"
+          #git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
+          
       - name: 下载并修改文件
         run: | 
           svn export https://github.com/klever1988/nanopi-openwrt/trunk/ new
