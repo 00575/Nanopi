@@ -31,8 +31,8 @@ jobs:
  
       - name: 设置帐户
         run: |
-          git config --local user.name "GitHub Action" && git config --local user.email "action@github.com"
-          #git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
+          #git config --local user.name "GitHub Action" && git config --local user.email "action@github.com"
+          git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
           
       - name: 下载并修改文件
         run: | 
