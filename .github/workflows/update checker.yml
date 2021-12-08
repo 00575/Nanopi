@@ -30,7 +30,9 @@ jobs:
           echo "date=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
  
       - name: 设置帐户
-        run: git config --global user.name '00575' && git config --global user.email 'xixiaaijia@gmail.com'
+        run: |
+          #git config --global user.name '00575' && git config --global user.email 'xixiaaijia@gmail.com'
+          git config --local user.email "action@github.com" && git config --local user.name "GitHub Action"
 
       - name: 下载并修改文件
         run: | 
