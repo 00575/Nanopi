@@ -27,7 +27,7 @@ jobs:
       uses: kolpav/purge-artifacts-action@master
       with:
         token: ${{ github.token }}
-        expire-in: 3d
+        expire-in: 2d
         
   Cleanup-Workflow-Logs:
     runs-on: ubuntu-20.04
@@ -38,4 +38,4 @@ jobs:
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}
-          retain_days: 3
+          retain_days: 1
