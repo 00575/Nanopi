@@ -5,7 +5,7 @@ on:
     inputs:
       package_clean:
         description: 'check to make clean package'
-        default: 'true'
+        default: 'false'
         required: true
   schedule:
     - cron: 00 17 * * *
