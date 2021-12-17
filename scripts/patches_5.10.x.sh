@@ -110,8 +110,8 @@ if [[ ! -z "$line_number_h6" ]]; then
 sed -i $line_number_h6',+10 s/font-weight: normal/font-weight: bold/' $css_file
 fi
 
-# set default theme to argon
-sed -i '/uci commit luci/i\uci set luci.main.mediaurlbase="/luci-static/argon"' `find package -type f -path '*/default-settings/files/99-default-settings'`
+# set default theme to openwrt2020
+sed -i '/uci commit luci/i\uci set luci.main.mediaurlbase="/luci-static/openwrt2020"' `find package -type f -path '*/default-settings/files/99-default-settings'`
 
 # remove the mirros from cn
 sed -i '/182.140.223.146/d;/\.cn\//d;/tencent/d' scripts/download.pl
