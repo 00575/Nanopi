@@ -42,7 +42,7 @@ jobs:
           cp -rf new/scripts/merge_packages.sh ./scripts/
           cp -rf new/scripts/patches.sh ./scripts/patches_5.4.x.sh
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches_5.4.x.sh
-          #sed -i 's/openwrt2020/argon/g' scripts/patches_5.4.x.sh
+          sed -i 's/openwrt2020/argon/g' scripts/patches_5.10.x.sh
           rm -rf new
           wget -qO scripts/kernel https://github.com/immortalwrt/immortalwrt/raw/master/include/kernel-version.mk
           sed -i '8,13!d' scripts/kernel
