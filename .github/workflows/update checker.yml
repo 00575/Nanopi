@@ -36,7 +36,8 @@ jobs:
           
       - name: 下载并修改文件
         run: | 
-          svn export https://github.com/klever1988/nanopi-openwrt/trunk/ new
+          #svn export https://github.com/klever1988/nanopi-openwrt/trunk/ new
+          git clone --depth=1 https://github.com/klever1988/nanopi-openwrt.git new
           cp -rf new/*.seed ./
           cp -rf new/scripts/merge_files.sh ./scripts/
           cp -rf new/scripts/merge_packages.sh ./scripts/
