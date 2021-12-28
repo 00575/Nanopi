@@ -49,7 +49,7 @@ if [ $BRANCH == 'master' ]; then
   sed -i 's/r8169/r8168/' target/linux/rockchip/image/armv8.mk
 
   # change the voltage value for over-clock stablization
-  sed -i 's/1400000/1450000/' target/linux/rockchip/patches-5.4/991-arm64-dts-rockchip-add-more-cpu-operating-points-for.patch
+  sed -i 's/1400000/1450000/' target/linux/rockchip/patches-5.10/991-arm64-dts-rockchip-add-more-cpu-operating-points-for.patch
   config_file_cpufreq=`find package/ -follow -type f -path '*/luci-app-cpufreq/root/etc/config/cpufreq'`
   truncate -s-1 $config_file_cpufreq
   echo -e "\toption governor0 'schedutil'" >> $config_file_cpufreq
