@@ -1,7 +1,7 @@
 name: build 5.10.x
 
 on:
-  #repository_dispatch:
+  repository_dispatch:
   workflow_dispatch:
     inputs:
       device:
