@@ -26,8 +26,8 @@ if [ $BRANCH == 'master' ]; then
 
   git checkout target/linux/rockchip
   git checkout target/linux/x86
-  sed -i 's/5.10/5.4/' target/linux/rockchip/Makefile
-  git revert --no-commit -X theirs 91eed5d9fb74e6c740291362ba12e11a2222a9fd
+  #sed -i 's/5.10/5.4/' target/linux/rockchip/Makefile
+  #git revert --no-commit -X theirs 91eed5d9fb74e6c740291362ba12e11a2222a9fd
   
   echo '# CONFIG_KCSAN is not set' >> target/linux/x86/config-5.10
   echo '# CONFIG_CRYPTO_GHASH_ARM_CE is not set' >> target/linux/sunxi/cortexa7/config-5.10
@@ -59,9 +59,9 @@ if [ $BRANCH == 'master' ]; then
   git clean -f -d target/linux/rockchip
   # enable the gpu for device 'r2s'|'r2c'|'r4s'|'r1p'
   wget https://github.com/coolsnowwolf/lede/raw/757e42d70727fe6b937bb31794a9ad4f5ce98081/target/linux/rockchip/config-default -NP target/linux/rockchip/
-  wget https://github.com/coolsnowwolf/lede/commit/f341ef96fe4b509a728ba1281281da96bac23673.patch
-  git apply f341ef96fe4b509a728ba1281281da96bac23673.patch
-  rm f341ef96fe4b509a728ba1281281da96bac23673.patch
+  #wget https://github.com/coolsnowwolf/lede/commit/f341ef96fe4b509a728ba1281281da96bac23673.patch
+  #git apply f341ef96fe4b509a728ba1281281da96bac23673.patch
+  #rm f341ef96fe4b509a728ba1281281da96bac23673.patch
 
   # enable fan control
   wget https://github.com/friendlyarm/friendlywrt/commit/cebdc1f94dcd6363da3a5d7e1e69fd741b8b718e.patch
