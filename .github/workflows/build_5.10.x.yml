@@ -56,8 +56,8 @@ jobs:
           mkdir lede && sudo mount -o nossd,compress=zstd $LOOP_DEVICE lede
           [ $BRANCH != 'master' ] && BRANCH='openwrt-18.06-k5.4'
           if [ -d 'lede/.git' ]; then
-          cd lede && rm -f zerospace && git config --local user.email "action@github.com" && git config --local user.name "GitHub Action"
-          #cd lede && rm -f zerospace && git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
+          #cd lede && rm -f zerospace && git config --local user.email "action@github.com" && git config --local user.name "GitHub Action"
+          cd lede && rm -f zerospace && git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
           git fetch && git reset --hard origin/$BRANCH
           else
           sudo chown $USER:$(id -gn) lede && git clone -b $BRANCH --single-branch https://github.com/immortalwrt/immortalwrt lede
