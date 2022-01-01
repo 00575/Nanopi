@@ -31,17 +31,16 @@ jobs:
  
       - name: 设置帐户
         run: |
-          git config --local user.name "GitHub Action" && git config --local user.email "action@github.com"
-          #git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
+          #git config --local user.name "GitHub Action" && git config --local user.email "action@github.com"
+          git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
           
       - name: 下载并修改文件
         run: | 
-          #svn export https://github.com/klever1988/nanopi-openwrt/trunk/ new
           git clone -b master --single-branch https://github.com/klever1988/nanopi-openwrt new
           cp -rf new/*.seed ./
           cp -rf new/scripts/merge_files.sh ./scripts/
-          cp -rf new/scripts/merge_packages.sh ./scripts/
-          cp -rf new/scripts/patches.sh ./scripts/patches_5.4.x.sh
+          #cp -rf new/scripts/merge_packages.sh ./scripts/
+          #cp -rf new/scripts/patches.sh ./scripts/patches_5.4.x.sh
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches_5.4.x.sh
           sed -i 's/openwrt2020/argon/g' scripts/patches_5.4.x.sh
           rm -rf new
