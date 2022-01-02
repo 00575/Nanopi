@@ -1,7 +1,7 @@
-name: build cache
+name: build packages
 
 on:
-  #repository_dispatch:
+  repository_dispatch:
   workflow_dispatch:
     inputs:
       device:
@@ -21,7 +21,6 @@ jobs:
     env:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
       BRANCH: ${{ github.event.client_payload.branch || github.event.inputs.branch }}
-      TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
     if: github.repository_owner=='00575'
     
     steps:
