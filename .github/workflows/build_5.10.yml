@@ -1,4 +1,4 @@
-name: build 5.10.x
+name: build 5.10
 
 on:
   repository_dispatch:
@@ -49,7 +49,7 @@ jobs:
           for i in {1..20}
           do
             curl -sL --fail https://github.com/00575/5.10.x_cache/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
-            #curl -sL --fail https://github.com/00575/5.4.x_cache/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
+            #curl -sL --fail https://github.com/00575/cache-build/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
           done | zstdmt -d -o lede.img || (truncate -s 30g lede.img && mkfs.btrfs -M lede.img)
           LOOP_DEVICE=$(losetup -f) && echo "LOOP_DEVICE=$LOOP_DEVICE" >> $GITHUB_ENV
           sudo losetup -P --direct-io $LOOP_DEVICE lede.img
@@ -217,7 +217,7 @@ jobs:
           file_glob: true
           overwrite: true
           release_name: ${{env.strDate}} 发布
-          body: "5.10.X内核编译"
+          body: "5.10内核编译"
 
   generate_firmware:
     needs: build_packages
@@ -283,4 +283,4 @@ jobs:
           file_glob: true
           overwrite: true
           release_name: ${{env.strDate}} 发布
-          body: "5.10.X内核编译"
+          body: "5.10内核编译"
