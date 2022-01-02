@@ -102,12 +102,14 @@ jobs:
           df -h .
            
       - name: Build and deploy packages
+        timeout-minutes: 1440
         run: |
+          ulimit -SHn 65000
           cd ~/lede
           while true; do make download -j && break || true; done
           make -j$[`nproc`+1] IGNORE_ERRORS=1
           mv `ls ~/lede/bin/targets/*/*/*imagebuilder*xz` ~/ib-$DEVICE.tar.xz
-          
+
           echo "======================="
           echo "Space usage:"
           echo "======================="
