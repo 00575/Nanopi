@@ -47,8 +47,8 @@ jobs:
           curl -sL https://raw.githubusercontent.com/00575/Nanopi/zstd-bin/zstd | sudo tee /usr/bin/zstd > /dev/null
           for i in {1..20}
           do
-            curl -sL --fail https://github.com/00575/cache-build/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
-            #curl -sL --fail https://github.com/klever1988/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
+            #curl -sL --fail https://github.com/00575/cache-build/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
+            curl -sL --fail https://github.com/klever1988/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
           done | zstdmt -d -o lede.img || (truncate -s 30g lede.img && mkfs.btrfs -M lede.img)
           LOOP_DEVICE=$(losetup -f) && echo "LOOP_DEVICE=$LOOP_DEVICE" >> $GITHUB_ENV
           sudo losetup -P --direct-io $LOOP_DEVICE lede.img
@@ -147,6 +147,7 @@ jobs:
 
       - name: Save cache state
         run: |
+          run: |
           cd
           sleep 60
           sudo mount -o remount,compress=no,nodatacow,nodatasum lede
