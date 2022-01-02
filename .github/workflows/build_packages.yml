@@ -147,7 +147,6 @@ jobs:
 
       - name: Save cache state
         run: |
-          run: |
           cd
           sleep 60
           sudo mount -o remount,compress=no,nodatacow,nodatasum lede
