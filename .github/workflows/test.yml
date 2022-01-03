@@ -1,1 +1,21 @@
-https://api.github.com/repos/00575/Nanopi/actions/workflows/17216146
+  Repo-Dispatcher:
+    needs: update
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        device: [r1p, r1s, r1s-h3, r2c, r2s, r4s, x86]
+    
+    steps:
+      - name: Trigger Compile
+        run: |
+          if [ '${{ matrix.device }}' = 'r1s' ]; then
+            branch='18.06';
+          else
+            branch='master';
+          fi
+          curl \
+          -X POST https://api.github.com/repos/00575/Nanopi/actions/workflows/17216146/dispatches \
+          -H "Accept: application/vnd.github.everest-preview+json" \
+          -H "Authorization: token ${{ secrets.workflow_token }}" \
+          -d '{"event_type": "${{ matrix.device }}", "client_payload": {"branch": "'$branch'", "device": "${{ matrix.device }}", "package_clean": "${{ github.event.inputs.package_clean }}"
