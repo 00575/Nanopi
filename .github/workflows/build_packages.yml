@@ -1,7 +1,7 @@
 name: build packages
 
 on:
-  repository_dispatch:
+  #repository_dispatch:
   workflow_dispatch:
     inputs:
       device:
