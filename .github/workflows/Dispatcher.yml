@@ -1,11 +1,20 @@
-  Repo-Dispatcher:
-    needs: update
+ (28 sloc)  974 Bytes
+name: Repo Dispatcher
+on:
+  workflow_dispatch:
+    inputs:
+      package_clean:
+        description: 'check to make clean package'
+        default: 'false'
+        required: true
+
+jobs:
+  build:
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
         device: [r1p, r1s, r1s-h3, r2c, r2s, r4s, x86]
-    
     steps:
       - name: Trigger Compile
         run: |
