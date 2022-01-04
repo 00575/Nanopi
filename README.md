@@ -38,7 +38,7 @@ wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate.sh | sh
 ```
 + 纯净版5.10内核升级
 ```bash
-wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate.sh | ver=-slim sh
+wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate-bash.sh | ver=-slim bash
 ```
 + docker版5.10内核升级
 ```bash
@@ -46,5 +46,5 @@ wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate.sh | ver
 ```
 + 保留原有插件升级
 ```bash
-wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate-bash.sh | sh
+wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate-bash.sh | bash
 ```
