@@ -42,5 +42,5 @@ wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate-bash.sh 
 ```
 + docker版5.10内核升级
 ```bash
-wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate.sh | ver=-with-docker sh
+wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate-bash.sh | ver=-with-docker bash
 ```
