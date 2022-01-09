@@ -80,6 +80,7 @@ jobs:
     steps:
       - name: Trigger Compile
         run: |
+          branch='master';
           curl \
           -X POST https://api.github.com/repos/${{ github.repository }}/dispatches \
           -H "Accept: application/vnd.github.everest-preview+json" \
