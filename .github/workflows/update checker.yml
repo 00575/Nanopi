@@ -39,7 +39,7 @@ jobs:
           git clone -b master --single-branch https://github.com/klever1988/nanopi-openwrt new
           cp -rf new/*.seed ./
           cp -rf new/scripts/*.sh ./scripts/
-          cp -rf new/scripts/merge_packages.sh ./scripts/
+          cp -rf new/files/etc/* ./files/etc/
           cp -rf new/patches/* ./patches/
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
           sed -i 's/openwrt2020/argon/g' scripts/patches.sh
