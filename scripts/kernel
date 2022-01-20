@@ -1,6 +1,2 @@
-
-KERNEL_DETAILS_FILE=$(INCLUDE_DIR)/kernel-$(KERNEL_PATCHVER)
-ifeq ($(wildcard $(KERNEL_DETAILS_FILE)),)
-  $(error Missing kernel version/hash file for $(KERNEL_PATCHVER). Please create $(KERNEL_DETAILS_FILE))
-endif
-
+LINUX_VERSION-5.10 = .90
+LINUX_KERNEL_HASH-5.10.90 = 945e4264c014a3d9dfc0a4639309dd1ec2fb545416556421f931b95da78c2725
