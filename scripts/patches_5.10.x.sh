@@ -70,9 +70,9 @@ if [ $BRANCH == 'master' ]; then
   sed -i 's/pwmchip1/pwmchip0/' target/linux/rockchip/armv8/base-files/usr/bin/fa-fancontrol.sh target/linux/rockchip/armv8/base-files/usr/bin/fa-fancontrol-direct.sh
 
   # add ntfs3
-  wget https://github.com/coolsnowwolf/lede/commit/772c5d2c8beac50ed5140c3d494f0806c64edc29.patch
-  git apply 772c5d2c8beac50ed5140c3d494f0806c64edc29.patch
-  rm 772c5d2c8beac50ed5140c3d494f0806c64edc29.patch
+  #wget https://github.com/coolsnowwolf/lede/commit/772c5d2c8beac50ed5140c3d494f0806c64edc29.patch
+  #git apply 772c5d2c8beac50ed5140c3d494f0806c64edc29.patch
+  #rm 772c5d2c8beac50ed5140c3d494f0806c64edc29.patch
 
   #this is a ugly fix
   sed -i '/procd-ujail/d' include/target.mk
