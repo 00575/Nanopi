@@ -45,7 +45,7 @@ jobs:
           sed -i 's/openwrt2020/argon/g' scripts/patches.sh
           rm -rf new
           rm -rf /scripts/autoupdate-offline.sh
-          wget -qO scripts/kernel https://github.com/immortalwrt/immortalwrt/raw/master/include/kernel-5.10
+          wget -qO scripts/kernel https://github.com/coolsnowwolf/lede/raw/master/include/kernel-5.15
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/autoupdate.sh
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/autoupdate-bash.sh
           #sed -i '/192.168.2.1/a\cp -f $GITHUB_WORKSPACE/assets/banner /package/base-files/files/etc/banner' scripts/patches.sh
