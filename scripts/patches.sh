@@ -21,6 +21,8 @@ mv $GITHUB_WORKSPACE/patches/99-disallow-aaaa.patch `find package/ -follow -type
 
 sed -i 's/5.0/1.0/' .ccache/ccache.conf || true
 
+sed -i 's/6a289406c1c0583763e5a9754e31a1eced55cd5f162a7bc2a3a315d5eb05c7a1/02b79d5e2b07b5e64cd28f1fe84395ee11eef95fc49fd923a9ab93022b148be6/' package/feeds/packages/containerd/Makefile
+
 if [ $BRANCH == 'master' ]; then
 
   # fix po path for snapshot
@@ -84,7 +86,7 @@ sed -i '/182.140.223.146/d;/\.cn\//d;/tencent/d' scripts/download.pl
 if [[ $DEVICE == 'r1s' ]]; then
   cd ~ && git clone -b openwrt-21.02 https://github.com/immortalwrt/immortalwrt && cd immortalwrt
   git log --grep r1s -i | grep '^commit ' | head -n -2 | cut -d' ' -f2 | tac | xargs git show | sed '0,/UENV/s//ATF/' > r1s.diff
-  git show 124116564e8a6081e79cb2e87b0d87b2af99c583 >> r1s.diff
+  git show 124116564e8a6081e79cb2e87b0d87b2af99c583 632c4c91e7640a354dc421fa324fd705b734252d 7fb1b00f5f6214bf7a29d3781d260a7e7c8547c9 >> r1s.diff
   cd ~/lede && chmod +x target/linux/sunxi/base-files/etc/board.d/* && git apply ~/immortalwrt/r1s.diff
   echo "\nCONFIG_ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM=y\nCONFIG_ARM_SCPI_CPUFREQ=y" >> target/linux/sunxi/cortexa53/config-5.4
 elif [[ $DEVICE == 'r2s' || $DEVICE == 'r2c' || $DEVICE == 'r1p' || $DEVICE == 'r1p-lts' ]]; then
