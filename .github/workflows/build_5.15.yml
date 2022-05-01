@@ -72,7 +72,7 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           . $GITHUB_WORKSPACE/scripts/merge_packages.sh
-          . $GITHUB_WORKSPACE/scripts/patches.sh
+          . $GITHUB_WORKSPACE/scripts/patches_5.15
           cd
           [ $BRANCH != 'master' ] && BRANCH='openwrt-18.06'
           svn export https://github.com/openwrt/luci/branches/$BRANCH luci
