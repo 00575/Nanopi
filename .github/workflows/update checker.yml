@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       package_clean:
-        description: 'check…'
+        description: 'check to make clean package'
         default: 'true'
         required: true
   schedule:
