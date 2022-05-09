@@ -215,7 +215,7 @@ jobs:
           file_glob: true
           overwrite: true
           release_name: ${{env.strDate}} 发布
-          #body: "5.15内核编译"
+          #body: "5.4内核编译"
 
   generate_firmware:
     needs: build_packages
@@ -281,4 +281,4 @@ jobs:
           file_glob: true
           overwrite: true
           release_name: ${{env.strDate}} 发布
-          body: "5.15内核编译"
+          #body: "5.4内核编译"
