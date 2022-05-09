@@ -1,4 +1,4 @@
-name: build 5.15
+name: Auto build
 
 on:
   repository_dispatch:
@@ -72,7 +72,7 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           . $GITHUB_WORKSPACE/scripts/merge_packages.sh
-          . $GITHUB_WORKSPACE/scripts/patches_5.15.sh
+          . $GITHUB_WORKSPACE/scripts/patches.sh
           cd
           [ $BRANCH != 'master' ] && BRANCH='openwrt-18.06'
           svn export https://github.com/openwrt/luci/branches/$BRANCH luci
@@ -215,7 +215,7 @@ jobs:
           file_glob: true
           overwrite: true
           release_name: ${{env.strDate}} 发布
-          body: "5.15内核编译"
+          #body: "5.15内核编译"
 
   generate_firmware:
     needs: build_packages
