@@ -1,7 +1,6 @@
 name: Auto build
 
 on:
-  repository_dispatch:
   workflow_dispatch:
     inputs:
       device:
