@@ -99,9 +99,9 @@ if [[ $DEVICE == 'r1s' ]]; then
   merge_package https://github.com/immortalwrt/immortalwrt/branches/openwrt-18.06-k5.4/package/emortal/autocore
 fi
 
-if [[ $DEVICE == 'r2s' || $DEVICE == 'r2c' || $DEVICE == 'r1p' || $DEVICE == 'r1p-lts' ]]; then
-  sed -i 's/5.10/5.4/g' target/linux/rockchip/Makefile
-fi
+#if [[ $DEVICE == 'r2s' || $DEVICE == 'r2c' || $DEVICE == 'r1p' || $DEVICE == 'r1p-lts' ]]; then
+  #sed -i 's/5.10/5.4/g' target/linux/rockchip/Makefile
+#fi
 
 if [[ $DEVICE == 'r4s' || $DEVICE == 'r2s' || $DEVICE == 'r2c' || $DEVICE == 'r1p' || $DEVICE == 'r1p-lts' ]]; then
   line_number_CONFIG_CRYPTO_LIB_BLAKE2S=$[`grep -n 'CONFIG_CRYPTO_LIB_BLAKE2S' package/kernel/linux/modules/crypto.mk | cut -d: -f 1`+1]
