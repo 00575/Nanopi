@@ -100,7 +100,7 @@ if [[ $DEVICE == 'r1s' ]]; then
 fi
 
 #if [[ $DEVICE == 'r2s' || $DEVICE == 'r2c' || $DEVICE == 'r1p' || $DEVICE == 'r1p-lts' ]]; then
-  #sed -i 's/5.10/5.4/g' target/linux/rockchip/Makefile
+  sed -i 's/5.10/5.15/g' target/linux/rockchip/Makefile
 #fi
 
 if [[ $DEVICE == 'r4s' || $DEVICE == 'r2s' || $DEVICE == 'r2c' || $DEVICE == 'r1p' || $DEVICE == 'r1p-lts' ]]; then
