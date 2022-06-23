@@ -49,7 +49,6 @@ jobs:
           #wget -qO scripts/kernel-5.4 https://github.com/coolsnowwolf/lede/raw/master/include/kernel-5.4
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/autoupdate.sh
           sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/autoupdate-bash.sh
-          #sed -i '/192.168.2.1/a\cp -f $GITHUB_WORKSPACE/assets/banner /package/base-files/files/etc/banner' scripts/patches.sh
           
       - name: 添加文件到暂存区
         run: git add .
