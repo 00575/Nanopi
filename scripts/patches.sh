@@ -35,6 +35,7 @@ sed -i $line_number_INCLUDE_V2ray'd' package/custom/openwrt-passwall/luci-app-pa
 sed -i $line_number_INCLUDE_V2ray'd' package/custom/openwrt-passwall/luci-app-passwall/Makefile
 sed -i $line_number_INCLUDE_V2ray'd' package/custom/openwrt-passwall/luci-app-passwall/Makefile
 
+
 if [ $BRANCH == 'master' ]; then
 
   # fix po path for snapshot
@@ -60,7 +61,10 @@ if [ $BRANCH == 'master' ]; then
   echo -e "\toption minfreq0 '816000'" >> $config_file_cpufreq
   echo -e "\toption maxfreq0 '1512000'\n" >> $config_file_cpufreq
 
-  # fix fan control
+  # enable fan control
+  wget https://github.com/friendlyarm/friendlywrt/commit/cebdc1f94dcd6363da3a5d7e1e69fd741b8b718e.patch
+  git apply cebdc1f94dcd6363da3a5d7e1e69fd741b8b718e.patch
+  rm cebdc1f94dcd6363da3a5d7e1e69fd741b8b718e.patch
   sed -i 's/pwmchip1/pwmchip0/' target/linux/rockchip/armv8/base-files/usr/bin/fa-fancontrol.sh target/linux/rockchip/armv8/base-files/usr/bin/fa-fancontrol-direct.sh
 
 fi
@@ -108,5 +112,4 @@ if [[ $DEVICE == 'r4s' || $DEVICE == 'r2s' || $DEVICE == 'r2c' || $DEVICE == 'r1
 fi
 
 # ...
-git revert d15af9ff7c534853695a52bb94f07beb4ffec02a
 sed -i 's/kmod-usb-net-rtl8152/kmod-usb-net-rtl8152-vendor/' target/linux/rockchip/image/armv8.mk target/linux/sunxi/image/cortexa53.mk target/linux/sunxi/image/cortexa7.mk
