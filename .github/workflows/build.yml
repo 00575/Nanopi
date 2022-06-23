@@ -77,7 +77,7 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           . $GITHUB_WORKSPACE/scripts/merge_packages.sh
-          . $GITHUB_WORKSPACE/scripts/patches_5.15.sh
+          . $GITHUB_WORKSPACE/scripts/patches.sh
           cd
           svn export https://github.com/openwrt/luci/trunk luci
           pushd luci
