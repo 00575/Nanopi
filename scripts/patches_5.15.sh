@@ -106,5 +106,4 @@ fi
 sed -i 's/5.10/5.15/g' target/linux/rockchip/Makefile
 
 # ...
-git revert d15af9ff7c534853695a52bb94f07beb4ffec02a
 sed -i 's/kmod-usb-net-rtl8152/kmod-usb-net-rtl8152-vendor/' target/linux/rockchip/image/armv8.mk target/linux/sunxi/image/cortexa53.mk target/linux/sunxi/image/cortexa7.mk
