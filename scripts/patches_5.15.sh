@@ -97,6 +97,7 @@ done
 sed -i '/uci commit luci/i\uci set luci.main.mediaurlbase="/luci-static/argon"' `find package -type f -path '*/default-settings/files/*-default-settings'`
 
 # add r1s support to Lean's repo
+sed -i 's/5.18/5.10/g' target/linux/rockchip/Makefile
 if [[ $DEVICE == 'r1s' ]]; then
   cd ~ && git clone -b openwrt-21.02 https://github.com/immortalwrt/immortalwrt && cd immortalwrt
   git log --grep r1s -i | grep '^commit ' | head -n -2 | cut -d' ' -f2 | tac | xargs git show | sed '0,/UENV/s//ATF/' > r1s.diff
