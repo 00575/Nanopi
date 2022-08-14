@@ -106,5 +106,5 @@ if [[ $DEVICE == 'r1s' ]]; then
   merge_package https://github.com/immortalwrt/immortalwrt/branches/openwrt-18.06-k5.4/package/emortal/autocore
 fi
 
-sed -i 's/5.18/5.15/g' target/linux/rockchip/Makefile
+sed -i 's/5.19/5.15/g' target/linux/rockchip/Makefile
 sed -i 's/kmod-usb-net-rtl8152/kmod-usb-net-rtl8152-vendor/' target/linux/rockchip/image/armv8.mk target/linux/sunxi/image/cortexa53.mk target/linux/sunxi/image/cortexa7.mk
