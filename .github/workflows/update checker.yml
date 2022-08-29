@@ -8,7 +8,7 @@ on:
         default: 'true'
         required: true
   schedule:
-    - cron: 00 17 * * *
+    - cron: 00 17 * * 6
 
 env:
   TZ: Asia/Shanghai
