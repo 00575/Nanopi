@@ -37,7 +37,7 @@ jobs:
       - name: 下载并修改文件
         run: | 
           git clone -b master --single-branch https://github.com/klever1988/nanopi-openwrt new
-          cp -rf new/*.seed ./
+          #cp -rf new/*.seed ./
           cp -rf new/scripts/*.sh ./scripts/
           cp -rf new/files/etc/* ./files/etc/
           cp -rf new/patches/* ./patches/
