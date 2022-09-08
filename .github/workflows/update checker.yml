@@ -34,21 +34,9 @@ jobs:
           git config --local user.name "GitHub Action" && git config --local user.email "action@github.com"
           #git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
           
-      - name: 下载并修改文件
+      - name: 检查内核文件
         run: | 
-          git clone -b master --single-branch https://github.com/klever1988/nanopi-openwrt new
-          #cp -rf new/*.seed ./
-          cp -rf new/scripts/*.sh ./scripts/
-          cp -rf new/files/etc/* ./files/etc/
-          cp -rf new/patches/* ./patches/
-          sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/patches.sh
-          sed -i 's/openwrt2020/argon/g' scripts/patches.sh
-          rm -rf new
-          rm -rf /scripts/autoupdate-offline.sh
           wget -qO scripts/kernel-5.15 https://github.com/coolsnowwolf/lede/raw/master/include/kernel-5.15
-          #wget -qO scripts/kernel-5.4 https://github.com/coolsnowwolf/lede/raw/master/include/kernel-5.4
-          sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/autoupdate.sh
-          sed -i 's?klever1988/nanopi-openwrt?00575/Nanopi?g' scripts/autoupdate-bash.sh
           
       - name: 添加文件到暂存区
         run: git add .
