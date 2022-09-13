@@ -90,14 +90,14 @@ if [[ $DEVICE == 'r1s' ]]; then
   merge_package https://github.com/immortalwrt/immortalwrt/branches/openwrt-18.06-k5.4/package/emortal/autocore
 fi
 
-case $DEVICE in
-  r2s|r2c|r1p|r1p-lts)
-    #sed -i 's/5.10/5.4/g' target/linux/rockchip/Makefile
-    line_number_CONFIG_CRYPTO_LIB_BLAKE2S=$[`grep -n 'CONFIG_CRYPTO_LIB_BLAKE2S' package/kernel/linux/modules/crypto.mk | cut -d: -f 1`+1]
-    sed -i $line_number_CONFIG_CRYPTO_LIB_BLAKE2S' s/HIDDEN:=1/DEPENDS:=@(LINUX_5_4||LINUX_5_10)/' package/kernel/linux/modules/crypto.mk
-    sed -i 's/libblake2s.ko@lt5.9/libblake2s.ko/;s/libblake2s-generic.ko@lt5.9/libblake2s-generic.ko/' package/kernel/linux/modules/crypto.mk
-  ;;
-esac
+#case $DEVICE in
+#  r2s|r2c|r1p|r1p-lts)
+#    #sed -i 's/5.10/5.4/g' target/linux/rockchip/Makefile
+#    line_number_CONFIG_CRYPTO_LIB_BLAKE2S=$[`grep -n 'CONFIG_CRYPTO_LIB_BLAKE2S' package/kernel/linux/modules/crypto.mk | cut -d: -f 1`+1]
+#    sed -i $line_number_CONFIG_CRYPTO_LIB_BLAKE2S' s/HIDDEN:=1/DEPENDS:=@(LINUX_5_4||LINUX_5_10)/' package/kernel/linux/modules/crypto.mk
+#    sed -i 's/libblake2s.ko@lt5.9/libblake2s.ko/;s/libblake2s-generic.ko@lt5.9/libblake2s-generic.ko/' package/kernel/linux/modules/crypto.mk
+#  ;;
+#esac
 
 sed -i "s/KERNEL_PATCHVER:=*.*/KERNEL_PATCHVER:=5.19/g" target/linux/rockchip/Makefile
 sed -i "s/KERNEL_PATCHVER=*.*/KERNEL_PATCHVER=5.19/g" target/linux/rockchip/Makefile        
