@@ -32,15 +32,15 @@ slim版固件只有OpenWrt本体，但内置了“本地软件源”，包含大
 
 ### 终端内在线升级方法： 
 
-+ 多插件版5.15内核升级
++ 多插件版升级
 ```bash
 wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate-bash.sh | bash
 ```
-+ 纯净版5.15内核升级
++ 纯净版升级
 ```bash
 wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate-bash.sh | ver=-slim bash
 ```
-+ docker版5.15内核升级
++ docker版升级
 ```bash
 wget -qO- https://github.com/00575/Nanopi/raw/master/scripts/autoupdate-bash.sh | ver=-with-docker bash
 ```
