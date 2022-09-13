@@ -177,7 +177,7 @@ jobs:
   generate_slim_firmware:
     needs: build_packages
     name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} slim firmware
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
 
@@ -225,7 +225,7 @@ jobs:
     needs: build_packages
     if: always()
     name: Generate ${{ github.event.client_payload.device || github.event.inputs.device }} firmware
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       DEVICE: ${{ github.event.client_payload.device || github.event.inputs.device }}
 
