@@ -99,5 +99,5 @@ case $DEVICE in
   ;;
 esac
 
-sed -i "s/KERNEL_PATCHVER:=*.*/KERNEL_PATCHVER:=5.15/g" target/linux/rockchip/Makefile
-sed -i "s/KERNEL_PATCHVER=*.*/KERNEL_PATCHVER=5.15/g" target/linux/rockchip/Makefile        
+sed -i "s/KERNEL_PATCHVER:=*.*/KERNEL_PATCHVER:=5.19/g" target/linux/rockchip/Makefile
+sed -i "s/KERNEL_PATCHVER=*.*/KERNEL_PATCHVER=5.19/g" target/linux/rockchip/Makefile        
