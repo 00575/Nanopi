@@ -71,4 +71,4 @@ jobs:
           -X POST https://api.github.com/repos/${{ github.repository }}/dispatches \
           -H "Accept: application/vnd.github.everest-preview+json" \
           -H "Authorization: token ${{ secrets.workflow_token }}" \
-          -d '{"event_type": "${{ matrix.device }}", "client_payload": {"branch": "'$branch'", "device": "${{ matrix.device }}", "package_clean": "${{ github.event.inputs.package_clean }}" }}'
+          -d '{"event_type": "${{ matrix.device }}", "client_payload": {"branch": "'$branch'", "device": "${{ matrix.device }}", "package_clean": "${{ github.event.inputs.package_clean }}", "debug": "${{ github.event.inputs.debug }}" }}'
