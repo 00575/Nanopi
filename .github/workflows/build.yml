@@ -158,7 +158,7 @@ jobs:
           sleep 60
           sudo umount lede
           sudo losetup -d $LOOP_DEVICE
-          export AUTH="Authorization: token ${{ secrets.workflow_token }}"
+          export AUTH="Authorization: token ${{ secrets.all_token }}"
           export cache_path='github.com/repos/00575/cache-build/releases'
           export cache_repo_id='54839364'
           zstdmt -c --long lede.img | split --numeric=1 -b 2000m - lede.$DEVICE.img.zst.
