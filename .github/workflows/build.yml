@@ -31,17 +31,18 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           nohup sh -c '
+          sudo sysctl vm.swappiness=0
           sudo apt update;
-          sudo apt -y --no-upgrade --no-install-recommends install pv jq \
+          sudo apt -y --no-install-recommends install pv jq \
           ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
           bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib \
           git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev \
           libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz \
-          mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pip qemu-utils \
-          rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev libpython3-dev
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk
-          sudo sysctl vm.swappiness=0
+          mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pyelftools \
+          libpython3-dev qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip \
+          vim wget xmlto xxd zlib1g-dev
           ' &
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk /opt/hostedtoolcache
 
       - uses: actions/checkout@v2
         with:
@@ -53,8 +54,8 @@ jobs:
           curl -sL https://raw.githubusercontent.com/00575/Nanopi/zstd-bin/zstd | sudo tee /usr/bin/zstd > /dev/null
           for i in {1..20}
           do
-            curl -sL --fail https://github.com/00575/cache-build/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
-          done | zstdmt -d -o lede.img || (truncate -s 33g lede.img && mkfs.btrfs -M lede.img)
+            curl -sL --fail https://github.com/stupidloud/sshactions/releases/download/cache/lede.$DEVICE.img.zst.0$i || break
+          done | zstdmt -d -o lede.img || (truncate -s 30g lede.img && mkfs.btrfs -M lede.img)
           LOOP_DEVICE=$(losetup -f) && echo "LOOP_DEVICE=$LOOP_DEVICE" >> $GITHUB_ENV
           sudo losetup -P --direct-io $LOOP_DEVICE lede.img
           mkdir lede && sudo mount -o nossd,compress=zstd $LOOP_DEVICE lede
