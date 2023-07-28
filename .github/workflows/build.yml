@@ -104,7 +104,6 @@ jobs:
           df -h .
           make clean || true
           df -h .
-          df -h .
            
       - name: Build and deploy packages
         timeout-minutes: 1440
