@@ -36,7 +36,7 @@ jobs:
       - name: 检查内核文件
         run: | 
           wget -qO scripts/kernel-5.15 https://raw.githubusercontent.com/coolsnowwolf/lede/master/include/kernel-5.15
-          wget -qO scripts/kernel-5.4 https://raw.github.com/coolsnowwolf/lede/master/include/kernel-6
+          wget -qO scripts/kernel-5.10 https://raw.github.com/coolsnowwolf/lede/master/include/kernel-5.10
           
       - name: 添加文件到暂存区
         run: git add .
