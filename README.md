@@ -1,7 +1,7 @@
 ### 固件发布：
 https://github.com/00575/Nanopi/releases
 
-(支持设备：r1s r2s r4s r1p r1s-h3 x86 r2c )
+(支持设备：r2s r4s r5s x86 )
 
 登录IP：192.168.2.1 
 
@@ -26,7 +26,7 @@ slim版固件只有OpenWrt本体，但内置了“本地软件源”，包含大
 
 点击右侧[ Run workflow ]
 
-输入你的设备名称（r2c r2s r4s r1s r1s-h3 r1p x86 ）
+输入你的设备名称（r2s r4s r5s x86 ）
 
 然后点击[ Run ]稍等即可在github actions构件输出处获取自己所需的固件
 
