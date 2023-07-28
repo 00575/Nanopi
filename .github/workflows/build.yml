@@ -98,11 +98,12 @@ jobs:
           cat .config
 
       - name: Clean build cache
-        #: ${{ github.event.client_payload.package_clean == 'true' || github.event.inputs.device != '' }}
+        if: ${{ github.event.client_payload.package_clean == 'true' || github.event.inputs.device != '' }}
         run: |
           cd ~/lede
           df -h .
-          make clean
+          make clean || true
+          df -h .
           df -h .
            
       - name: Build and deploy packages
