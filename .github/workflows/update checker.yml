@@ -62,7 +62,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        device: [r2s r4s r5s x86]
+        device: [r2s,r4s,r5s,x86]
     steps:
       - name: Trigger Compile
         run: |
