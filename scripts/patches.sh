@@ -17,46 +17,27 @@ sed -i '/skip\=/ a skip=`mount | grep -q /dev/$device; echo $?`' `find package/ 
 
 sed -i 's/START=95/START=99/' `find package/ -follow -type f -path */ddns-scripts/files/ddns.init`
 
+#sed -i 's/PKG_SOURCE_VERSION:=.*/PKG_SOURCE_VERSION:=master/' package/kernel/rtl8821cu/Makefile
+#sed -i 's/PKG_MIRROR_HASH:=.*/PKG_MIRROR_HASH:=skip/' package/kernel/rtl8821cu/Makefile
+
+# enable r2s oled plugin by default
+sed -i "s/enable '0'/enable '1'/" `find package/ -follow -type f -path '*/luci-app-oled/root/etc/config/oled'`
+
+# set default theme to argon
+sed -i '/uci commit luci/i\uci set luci.main.mediaurlbase="/luci-static/argon"' `find package -type f -path '*/default-settings/files/*-default-settings'`
+
 mkdir -p `find package/ -follow -type d -path '*/pdnsd-alt'`/patches
 mv $GITHUB_WORKSPACE/patches/99-disallow-aaaa.patch `find package/ -follow -type d -path '*/pdnsd-alt'`/patches
 
-if [[ $BRANCH == 'master' ]]; then
 
-  # fix po path for snapshot
-  #find package/ -follow -type d -path '*/po/zh-cn' | xargs dirname | xargs -n1 -i sh -c "rm -f {}/zh_Hans; ln -sf zh-cn {}/zh_Hans"
-
-  # remove non-exist package from x86 profile
-  sed -i 's/kmod-i40evf//;s/kmod-iavf//' target/linux/x86/Makefile
-
-  # kernel:fix bios boot partition is under 1 MiB
-  # https://github.com/WYC-2020/lede/commit/fe628c4680115b27f1b39ccb27d73ff0dfeecdc2
-  sed -i 's/256/1024/' target/linux/x86/image/Makefile
-
-  # enable r2s oled plugin by default
-  sed -i "s/enable '0'/enable '1'/" `find package/ -follow -type f -path '*/luci-app-oled/root/etc/config/oled'`
-
-  # swap the network adapter driver to r8168 to gain better performance for r4s
-  #sed -i 's/r8169/r8168/' target/linux/rockchip/image/armv8.mk
-
-
-  case $DEVICE in
-    r2s|r2c|r1p|r1p-lts)
-      # change the voltage value for over-clock stablization
-      config_file_cpufreq=`find package/ -follow -type f -path '*/luci-app-cpufreq/root/etc/config/cpufreq'`
-      truncate -s-1 $config_file_cpufreq
-      echo -e "\toption governor0 'schedutil'" >> $config_file_cpufreq
-      echo -e "\toption minfreq0 '816000'" >> $config_file_cpufreq
-      echo -e "\toption maxfreq0 '1512000'\n" >> $config_file_cpufreq
-
-      # add pwm fan control service
-      wget https://github.com/friendlyarm/friendlywrt/commit/cebdc1f94dcd6363da3a5d7e1e69fd741b8b718e.patch
-      git apply cebdc1f94dcd6363da3a5d7e1e69fd741b8b718e.patch
-      rm cebdc1f94dcd6363da3a5d7e1e69fd741b8b718e.patch
-      sed -i 's/pwmchip1/pwmchip0/' target/linux/rockchip/armv8/base-files/usr/bin/fa-fancontrol.sh target/linux/rockchip/armv8/base-files/usr/bin/fa-fancontrol-direct.sh
-      ;;
-  esac
-
-fi
+line_number_INCLUDE_Xray=$[`grep -m1 -n 'Include Xray' package/custom/openwrt-passwall/luci-app-passwall/Makefile|cut -d: -f1`-1]
+sed -i $line_number_INCLUDE_Xray'd' package/custom/openwrt-passwall/luci-app-passwall/Makefile
+sed -i $line_number_INCLUDE_Xray'd' package/custom/openwrt-passwall/luci-app-passwall/Makefile
+sed -i $line_number_INCLUDE_Xray'd' package/custom/openwrt-passwall/luci-app-passwall/Makefile
+line_number_INCLUDE_V2ray=$[`grep -m1 -n 'Include V2ray' package/custom/openwrt-passwall/luci-app-passwall/Makefile|cut -d: -f1`-1]
+sed -i $line_number_INCLUDE_V2ray'd' package/custom/openwrt-passwall/luci-app-passwall/Makefile
+sed -i $line_number_INCLUDE_V2ray'd' package/custom/openwrt-passwall/luci-app-passwall/Makefile
+sed -i $line_number_INCLUDE_V2ray'd' package/custom/openwrt-passwall/luci-app-passwall/Makefile
 
 # inject the firmware version
 strDate=`TZ=UTC-8 date +%Y-%m-%d`
@@ -78,11 +59,64 @@ case $status_page in
 esac
 done
 
-# set default theme to argon
-sed -i '/uci commit luci/i\uci set luci.main.mediaurlbase="/luci-static/argon"' `find package -type f -path '*/default-settings/files/*-default-settings'`
+# fix po path for snapshot
+#find package/ -follow -type d -path '*/po/zh-cn' | xargs dirname | xargs -ri sh -c "rm -f {}/zh_Hans; ln -sf zh-cn {}/zh_Hans"
 
-sed -i "s/KERNEL_PATCHVER:=*.*/KERNEL_PATCHVER:=5.15/g" target/linux/rockchip/Makefile
-sed -i "s/KERNEL_PATCHVER=*.*/KERNEL_PATCHVER=5.15/g" target/linux/rockchip/Makefile        
+# remove non-exist package from x86 profile
+sed -i 's/kmod-i40evf//;s/kmod-iavf//' target/linux/x86/Makefile
 
+# kernel:fix bios boot partition is under 1 MiB
+# https://github.com/WYC-2020/lede/commit/fe628c4680115b27f1b39ccb27d73ff0dfeecdc2
+sed -i 's/256/1024/' target/linux/x86/image/Makefile
+
+# swap the network adapter driver to r8168 to gain better performance for r4s
+#sed -i 's/r8169/r8168/' target/linux/rockchip/image/armv8.mk
+
+# add pwm fan control service
+wget https://github.com/friendlyarm/friendlywrt/commit/cebdc1f94dcd6363da3a5d7e1e69fd741b8b718e.patch
+git apply cebdc1f94dcd6363da3a5d7e1e69fd741b8b718e.patch
+rm cebdc1f94dcd6363da3a5d7e1e69fd741b8b718e.patch
+sed -i 's/pwmchip1/pwmchip0/' target/linux/rockchip/armv8/base-files/usr/bin/fa-fancontrol.sh target/linux/rockchip/armv8/base-files/usr/bin/fa-fancontrol-direct.sh
+
+case $DEVICE in
+  r2s|r2c|r1p|r1p-lts)
+    # change the voltage value for over-clock stablization
+    config_file_cpufreq=`find package/ -follow -type f -path '*/luci-app-cpufreq/root/etc/config/cpufreq'`
+    truncate -s-1 $config_file_cpufreq
+    echo -e "\toption governor0 'schedutil'" >> $config_file_cpufreq
+    echo -e "\toption minfreq0 '816000'" >> $config_file_cpufreq
+    echo -e "\toption maxfreq0 '1512000'\n" >> $config_file_cpufreq
+
+    line_number_CONFIG_CRYPTO_LIB_BLAKE2S=$[`grep -n 'CONFIG_CRYPTO_LIB_BLAKE2S' package/kernel/linux/modules/crypto.mk | cut -d: -f 1`+1]
+    sed -i $line_number_CONFIG_CRYPTO_LIB_BLAKE2S' s/HIDDEN:=1/DEPENDS:=@(LINUX_5_4||LINUX_5_10)/' package/kernel/linux/modules/crypto.mk
+    sed -i 's/libblake2s.ko@lt5.9/libblake2s.ko/;s/libblake2s-generic.ko@lt5.9/libblake2s-generic.ko/' package/kernel/linux/modules/crypto.mk
+    ;;
+esac
+
+# add r1s support to Lean's repo
+if [[ $DEVICE == 'r1s' ]]; then
+  cd ~ && rm -rf immortalwrt/ && git clone -b openwrt-21.02 https://github.com/immortalwrt/immortalwrt && cd immortalwrt
+  git log --grep r1s -i | grep '^commit ' | head -n -2 | cut -d' ' -f2 | tac | xargs git show | sed '0,/UENV/s//ATF/' > r1s.diff
+  git show 632c4c91e7640a354dc421fa324fd705b734252d 7fb1b00f5f6214bf7a29d3781d260a7e7c8547c9 >> r1s.diff
+  cd ~/lede && chmod +x target/linux/sunxi/base-files/etc/board.d/* && git apply ~/immortalwrt/r1s.diff
+  sed -i 's/kmod-rtl8189es//;s/wpad-basic-openssl/wpad-basic-wolfssl/' target/linux/sunxi/image/cortexa53.mk
+  sed -i 's/arm-trusted-firmware-sunxi-a64/trusted-firmware-a-sunxi-a64/' package/boot/uboot-sunxi/Makefile
+  merge_package https://github.com/immortalwrt/immortalwrt/branches/openwrt-18.06-k5.4/package/emortal/autocore
+
+  sed -i '/luci/d' $GITHUB_WORKSPACE/extra_packages.seed
+
+  sed -i 's/5.10/5.4/g' target/linux/sunxi/Makefile
+fi
+
+# fix for r1s-h3
+if [[ $DEVICE == 'r1s-h3' ]]; then
+  sed -i 's/kmod-leds-gpio//' target/linux/sunxi/image/cortexa7.mk
+fi
+
+# ...
 sed -i 's/kmod-usb-net-rtl8152/kmod-usb-net-rtl8152-vendor/' target/linux/rockchip/image/armv8.mk target/linux/sunxi/image/cortexa53.mk target/linux/sunxi/image/cortexa7.mk
-sed -i 's/5de8c8e29aaa3fb9cc6b47bb27299f271354ebb72514e3accadc7d38b5bbaa72/9625784cf2e4fd9842f1d407681ce4878b5b0dcddbcd31c6135114a30c71e6a8/' package/feeds/packages/jq/Makefile
+
+## ugly fix of the read-only issue
+sed -i '3 i sed -i "/^exit.*/i\\/bin\\/mount -o remount,rw /" /etc/rc.local' `find package -type f -path '*/default-settings/files/*-default-settings'`
+
+sed -i 's/\+1017\,12/+1017\,13/;/ifdef CONFIG_MBO/i+NEED_GAS=y' package/network/services/hostapd/patches/200-multicall.patch
